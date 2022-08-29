@@ -1,0 +1,26 @@
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace RespoBot
+{
+    public class Program
+    {
+        public static async Task Main(String[] args)
+        {
+            var services = Startup.ConfigureServices();
+            var serviceProvider = services.BuildServiceProvider();
+
+            await serviceProvider.GetService<EntryPoint>().Run(args);
+        }
+
+        public static bool IsDebug()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+    }
+}
