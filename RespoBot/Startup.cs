@@ -36,6 +36,7 @@ namespace RespoBot
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
             services.AddSingleton<CommandHandler>();
+            services.AddSingleton<ResultsService>();
 
             services.AddSingleton<EntryPoint>();
 
