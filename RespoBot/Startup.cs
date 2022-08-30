@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -17,6 +18,7 @@ namespace RespoBot
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddUserSecrets<Program>()
+                .AddEnvironmentVariables("RespoBot:")
                 .Build();
 
             IServiceCollection services = new ServiceCollection();
