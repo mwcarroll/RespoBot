@@ -76,7 +76,7 @@ namespace RespoBot.Services
 
             DriverInfo[] currentDriverInfos = (await IRacingDataClient.GetDriverInfoAsync(customerIds: members.Select(x => x.iRacingMemberId).ToArray(), includeLicenses: true)).Data;
 
-            foreach(var member in members)
+            foreach(DataContext.Member member in members)
             {
                 DriverInfo currentDriverInfo = currentDriverInfos.Where(x => x.CustomerId == member.iRacingMemberId).FirstOrDefault();
                 DataContext.MemberInfo cachedMemberInfo = memberInfos.FirstOrDefault(x => x.iRacingMemberId == member.iRacingMemberId);
@@ -104,20 +104,21 @@ namespace RespoBot.Services
                 DataContext.LicenseInfo[] cachedLicenseInfo = licenseInfos.Where(x => x.iRacingMemberId == member.iRacingMemberId).ToArray();
                 LicenseInfo[] currentLicenseInfos = currentDriverInfo.Licenses;
 
-                DataContext.LicenseInfo[] dataToInsert = Mapper.Map<LicenseInfo[], DataContext.LicenseInfo[]>(
+                DataContext.LicenseInfo[] dataToUpsert = Mapper.Map<LicenseInfo[], DataContext.LicenseInfo[]>(
                     currentLicenseInfos,
                     opts => opts.AfterMap((src, dest) => {
                         for (int i = 0; i < dest.Length; i++)
                         {
                             dest[i].iRacingMemberId = member.iRacingMemberId;
+                            dest[i].Id = cachedLicenseInfo.Where(x => x.iRacingMemberId == member.iRacingMemberId && x.CategoryId == i + 1).Select(x => x.Id).FirstOrDefault();
                         }
                     })
                 );
 
                 if (cachedLicenseInfo == null || cachedLicenseInfo.Length == 0)
-                    Db.LicenseInfos.BulkInsert(dataToInsert);
-                else
-                    Db.LicenseInfos.BulkUpdate(dataToInsert);             
+                    Db.LicenseInfos.BulkInsert(dataToUpsert);
+                else if (!cachedLicenseInfo.SequenceEqual(dataToUpsert))
+                    Db.LicenseInfos.BulkUpdate(dataToUpsert);
             }
         }
 
