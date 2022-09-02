@@ -57,22 +57,22 @@ namespace RespoBot
             switch (arg.Severity)
             {
                 case LogSeverity.Critical:
-                    Logger.LogCritical(message: arg.ToString());
+                    Logger.LogCritical(message: arg.Message);
                     break;
                 case LogSeverity.Error:
-                    Logger.LogError(message: arg.ToString());
+                    Logger.LogError(message: arg.Exception.Message);
                     break;
                 case LogSeverity.Warning:
-                    Logger.LogWarning(message: arg.ToString());
+                    Logger.LogWarning(message: arg.Message);
                     break;
                 case LogSeverity.Info:
-                    Logger.LogInformation(message: arg.ToString());
+                    Logger.LogInformation(message: arg.Message);
                     break;
                 case LogSeverity.Verbose:
-                    Logger.LogTrace(message: arg.ToString());
+                    Logger.LogTrace(message: arg.Message);
                     break;
                 case LogSeverity.Debug:
-                    Logger.LogDebug(message: arg.ToString());
+                    Logger.LogDebug(message: arg.Message);
                     break;
             }
 

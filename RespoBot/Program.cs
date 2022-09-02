@@ -8,8 +8,8 @@ namespace RespoBot
     {
         public static async Task Main(String[] args)
         {
-            var services = Startup.ConfigureServices();
-            var serviceProvider = services.BuildServiceProvider();
+            IServiceCollection services = Startup.ConfigureServices();
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
 
             await serviceProvider.GetService<EntryPoint>().Run(args);
         }

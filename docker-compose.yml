@@ -6,3 +6,8 @@ services:
     build:
       context: .
       dockerfile: RespoBot/Dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: "development"
+      RespoBot:RespoBot:Token: ""
+      RespoBot:RespoBot:TestGuildId: ""
+      RespoBot:RespoBot:ResultsServiceInterval: ""

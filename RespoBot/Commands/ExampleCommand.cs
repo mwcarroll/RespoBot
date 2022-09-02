@@ -5,10 +5,8 @@ namespace RespoBot.Commands
 {
     public class ExampleCommand : InteractionModuleBase<SocketInteractionContext>
     {
-        [SlashCommand("ping", "ping/pong")]
-        public async Task Ping()
-        {
-            await RespondAsync($"Pong");
-        }
+        [SlashCommand("ping", "Pings the bot and returns its latency.")]
+        public async Task PingPong()
+            => await RespondAsync(text: $":ping_pong: It took me {Context.Client.Latency}ms to respond to you!", ephemeral: true);
     }
 }

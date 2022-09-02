@@ -6,10 +6,7 @@
     "Docker": {
       "commandName": "Docker",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
-        "RespoBot:RespoBot:Token": "",
-        "RespoBot:RespoBot:TestGuildId": "",
-        "RespoBot:RespoBot:ResultsServiceInterval": "1"
+        "DOTNET_ENVIRONMENT": "Development"
       }
     }
   }
