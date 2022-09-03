@@ -2,7 +2,6 @@
 using DataContext = RespoBot.Data.Classes;
 using Aydsko.iRacingData.Member;
 using System;
-using System.Security.Policy;
 
 namespace RespoBot
 {

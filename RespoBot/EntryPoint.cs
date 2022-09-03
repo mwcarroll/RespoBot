@@ -40,7 +40,7 @@ namespace RespoBot
             await Client.StartAsync();
 
             await ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
-            ServiceProvider.GetRequiredService<ResultsService>().Initialize();
+            ServiceProvider.GetRequiredService<StatsMassUpdaterService>().Initialize();
 
             await Task.Delay(Timeout.Infinite);
         }
