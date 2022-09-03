@@ -61,7 +61,10 @@ namespace RespoBot
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
             services.AddSingleton<CommandHandler>();
-            services.AddSingleton<ResultsService>();            
+
+            services.AddSingleton<StatsMassUpdaterService>();
+            //services.AddSingleton<PublicRacesService>();
+            //services.AddSingleton<HostedRacesService>();
 
             services.AddSingleton<EntryPoint>();
 
