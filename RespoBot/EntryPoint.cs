@@ -32,15 +32,17 @@ namespace RespoBot
 
         public async Task Run(String[] args)
         {
-            Client.Ready += Client_Ready;
-            Client.Log += Log;
-            Commands.Log += Log;
+            //Client.Ready += Client_Ready;
+            //Client.Log += Log;
+            //Commands.Log += Log;
 
-            await Client.LoginAsync(TokenType.Bot, Configuration["RespoBot:Token"]);
-            await Client.StartAsync();
+            //await Client.LoginAsync(TokenType.Bot, Configuration["RespoBot:Token"]);
+            //await Client.StartAsync();
 
-            await ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
-            ServiceProvider.GetRequiredService<StatsMassUpdaterService>().Initialize();
+            //await ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
+            //ServiceProvider.GetRequiredService<StatsMassUpdaterService>().Initialize();
+            //ServiceProvider.GetRequiredService<PublicRacesService>().Initialize();
+            ServiceProvider.GetRequiredService<DataHelperService>().Run();
 
             await Task.Delay(Timeout.Infinite);
         }

@@ -1,6 +1,4 @@
-﻿using Discord;
-using System.Configuration;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
 using System;
 using Microsoft.Extensions.Configuration;
@@ -9,26 +7,26 @@ using Discord.WebSocket;
 
 namespace RespoBot.Services
 {
-    public class PeriodicService : IPeriodicService
+    public class PeriodicService
     {
         private readonly IConfiguration Configuration;
         private readonly ILogger<EntryPoint> Logger;
 
         private readonly DiscordSocketClient DiscordClient;
 
-        private readonly string _intervalConfigName;
+        private readonly string _serviceName;
 
         private DateTime _nextRunTime;
 
 
-        public PeriodicService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string intervalConfigName)
+        public PeriodicService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
         {
             Configuration = configuration;
             Logger = logger;
 
             DiscordClient = discordClient;
 
-            _intervalConfigName = intervalConfigName;
+            _serviceName = serviceName;
         }
 
         public virtual async void Run()
@@ -38,7 +36,7 @@ namespace RespoBot.Services
 
         public void Initialize()
         {
-            Logger.LogInformation($"Initializing ResultsService");
+            Logger.LogInformation($"Initializing {_serviceName}");
 
             DiscordClient.Ready += Client_Ready;
         }
@@ -47,7 +45,7 @@ namespace RespoBot.Services
         {
             CancellationTokenSource tokenSource = new();
 
-            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(Configuration.GetValue<int>($"RespoBot:{_intervalConfigName}Interval")), tokenSource.Token);
+            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(Configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
 
             return Task.CompletedTask;
         }

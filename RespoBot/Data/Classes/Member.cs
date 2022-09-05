@@ -1,16 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MicroOrm.Dapper.Repositories.Attributes;
 using MicroOrm.Dapper.Repositories.Attributes.Joins;
 
 namespace RespoBot.Data.Classes
 {
-    [Table("members")]
+    [Table("Members")]
     public class Member
     {
         [Key]
-        [Identity, IgnoreUpdate]
+        [Identity]
         public int Id { get; set; }
         public string Name { get; set; }
         [Column("iRacingMemberId")]

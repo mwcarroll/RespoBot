@@ -1,5 +1,4 @@
-﻿using MicroOrm.Dapper.Repositories.Attributes;
-using MicroOrm.Dapper.Repositories.Attributes.Joins;
+﻿using MicroOrm.Dapper.Repositories.Attributes.Joins;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RespoBot.Data.Classes
 {
-    [Table("memberInfos")]
+    [Table("MemberInfos")]
     public class MemberInfo
     {
         [Key]

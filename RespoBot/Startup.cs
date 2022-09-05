@@ -1,8 +1,10 @@
 using System;
-using System.Data.Common;
+using System.Data;
 using System.IO;
 using AutoMapper;
 using Aydsko.iRacingData;
+using Dapper;
+using Dapper.FluentMap.Mapping;
 using Discord.Interactions;
 using Discord.WebSocket;
 using MicroOrm.Dapper.Repositories.Config;
@@ -37,6 +39,7 @@ namespace RespoBot
             });
 
             MicroOrmConfig.SqlProvider = SqlProvider.MSSQL;
+            MicroOrmConfig.UseQuotationMarks = true;
 
             services.AddSingleton(typeof(ISqlGenerator<>), typeof(SqlGenerator<>));
             services.AddSingleton<IDbContext>(x => new MsSqlDbContext(configuration.GetConnectionString("Default")));
@@ -62,9 +65,11 @@ namespace RespoBot
             services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
             services.AddSingleton<CommandHandler>();
 
-            services.AddSingleton<StatsMassUpdaterService>();
+            //services.AddSingleton<StatsMassUpdaterService>();
             //services.AddSingleton<PublicRacesService>();
             //services.AddSingleton<HostedRacesService>();
+
+            services.AddSingleton<DataHelperService>();
 
             services.AddSingleton<EntryPoint>();
 

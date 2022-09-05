@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using AutoMapper;
 
-namespace RespoBot.Services
+namespace RespoBot.Services.PeriodicServices
 {
     public class StatsMassUpdaterService : PeriodicService
     {
@@ -83,7 +83,7 @@ namespace RespoBot.Services
                     DataContext.LicenseInfo[] cachedLicenseInfo = licenseInfos.Where(x => x.iRacingMemberId == member.iRacingMemberId).ToArray();
                     LicenseInfo[] currentLicenseInfos = currentDriverInfo.Licenses;
 
-                    DataContext.LicenseInfo[] dataToUpsert = Mapper.Map<LicenseInfo[], DataContext.LicenseInfo[]>(
+                    DataContext.LicenseInfo[] dataToUpsert = Mapper.Map<DataContext.LicenseInfo[]>(
                         currentLicenseInfos,
                         opts => opts.AfterMap((src, dest) =>
                         {
