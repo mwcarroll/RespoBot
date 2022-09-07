@@ -75,32 +75,22 @@ namespace RespoBot.Services
                                 EventTypes = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value }
                             })).Data;
 
-                        mappedRaces.AddRange(
-                            Mapper.Map<DataContext.Events.PublicEvents[]>(
-                                races,
-                                opts =>
-                                    opts.AfterMap((src, dest) =>
-                                    {
-                                        for (int i = 0; i < dest.Length; i++)
+                        if(races.Length > 0)
+                            mappedRaces.AddRange(
+                                Mapper.Map<DataContext.Events.PublicEvents[]>(
+                                    races,
+                                    opts => opts.AfterMap((src, dest) =>
                                         {
-                                            dest[i].iRacingMemberId = member.iRacingMemberId;
+                                            for (int i = 0; i < dest.Length; i++)
+                                            {
+                                                dest[i].iRacingMemberId = member.iRacingMemberId;
+                                            }
                                         }
-                                    }
                                     )
-                            )
-                        );
+                                )
+                            );
 
                         dateToSearch = dateToSearch.AddDays(-90);
-                    }
-                    catch(ArgumentNullException ex)
-                    {
-                        if (ex.Message.Equals("Value cannot be null. (Parameter 'uriString')"))
-                        {
-                            Logger.LogWarning("Value cannot be null. (Parameter 'uriString') -- can likely ignore as this just means we didn't get any search results");
-                            dateToSearch = dateToSearch.AddDays(-90);
-                        }
-                        else
-                            Logger.LogCritical(ex, ex.Message);
                     }
                     catch(Exception ex)
                     {
