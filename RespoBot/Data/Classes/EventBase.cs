@@ -1,8 +1,7 @@
-﻿using Aydsko.iRacingData.Results;
-using MicroOrm.Dapper.Repositories.Attributes;
+﻿using MicroOrm.Dapper.Repositories.Attributes;
+using MicroOrm.Dapper.Repositories.Attributes.Joins;
 using System.ComponentModel.DataAnnotations;
 using System;
-using MicroOrm.Dapper.Repositories.Attributes.Joins;
 
 namespace RespoBot.Data.Classes
 {

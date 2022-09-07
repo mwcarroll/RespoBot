@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MicroOrm.Dapper.Repositories.Attributes;
+﻿using MicroOrm.Dapper.Repositories.Attributes;
 using MicroOrm.Dapper.Repositories.Attributes.Joins;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RespoBot.Data.Classes
 {
@@ -16,6 +17,7 @@ namespace RespoBot.Data.Classes
         public int iRacingMemberId { get; set; }
         [Column("discordMemberId")]
         public long DiscordMemberId { get; set; }
+        public DateTime LastChecked { get; set; }
 
         [InnerJoin(tableName: "memberInfos", key: "iRacingMemberId", externalKey: "iRacingMemberId")]
         public MemberInfo MemberInfo { get; set; }

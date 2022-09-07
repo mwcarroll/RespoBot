@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
-using Aydsko.iRacingData;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Reflection.PortableExecutable;
 
-using RespoBot.Data.DbContexts;
-
+using Aydsko.iRacingData;
 using iRApiCars = Aydsko.iRacingData.Cars;
 using iRApiConstants = Aydsko.iRacingData.Constants;
 using iRApiSearches = Aydsko.iRacingData.Searches;
 using iRApiTracks = Aydsko.iRacingData.Tracks;
 
 using DataContext = RespoBot.Data.Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Reflection.PortableExecutable;
+using RespoBot.Data.DbContexts;
 
 namespace RespoBot.Services
 {
@@ -98,8 +97,6 @@ namespace RespoBot.Services
                         return;
                     }
                 }
-
-                
             }
 
             mappedRaces = mappedRaces.OrderBy(x => x.StartTime).ToList();

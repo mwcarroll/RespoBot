@@ -1,15 +1,18 @@
-﻿using Aydsko.iRacingData;
-using Aydsko.iRacingData.Member;
-using Discord.WebSocket;
+﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using DataContext = RespoBot.Data.Classes;
-using RespoBot.Data.DbContexts;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using AutoMapper;
+
+using Aydsko.iRacingData;
+using Aydsko.iRacingData.Member;
+
+using Discord.WebSocket;
+
+using DataContext = RespoBot.Data.Classes;
+using RespoBot.Data.DbContexts;
 
 namespace RespoBot.Services.PeriodicServices
 {

@@ -1,11 +1,12 @@
-﻿using Discord;
-using Discord.Interactions;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+
+using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
 
 namespace RespoBot.Services
 {

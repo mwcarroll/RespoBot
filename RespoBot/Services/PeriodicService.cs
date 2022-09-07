@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
-using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 using Discord.WebSocket;
 
 namespace RespoBot.Services
@@ -29,7 +30,7 @@ namespace RespoBot.Services
             _serviceName = serviceName;
         }
 
-        public virtual async void Run()
+        public virtual void Run()
         {
 
         }
