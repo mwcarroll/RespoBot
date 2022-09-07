@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RespoBot.Data.Classes
 {
     [Table("Tracks")]
-    public class Track
+    public class Track : IEquatable<Track>
     {
         [Key]
         [Column("Id")]
@@ -56,5 +56,58 @@ namespace RespoBot.Data.Classes
         public float TrackConfigLength { get; set; }
         public string TrackDirpath { get; set; }
         public string Banking { get; set; }
+
+        public bool Equals(Track other)
+        {
+            if (other == null) return false;
+
+            return
+                this.Id.Equals(other.Id) &&
+                this.Name.Equals(other.Name) &&
+                this.AiEnabled.Equals(other.AiEnabled) &&
+                this.AwardExempt.Equals(other.AwardExempt) &&
+                this.Category.Equals(other.Category) &&
+                this.CategoryId.Equals(other.CategoryId) &&
+                this.Closes.Equals(other.Closes) &&
+                this.ConfigName.Equals(other.ConfigName) &&
+                this.CornersPerLap.Equals(other.CornersPerLap) &&
+                this.Created.Equals(other.Created) &&
+                this.FreeWithSubscription.Equals(other.FreeWithSubscription) &&
+                this.FullyLit.Equals(other.FullyLit) &&
+                this.GridStalls.Equals(other.GridStalls) &&
+                this.HasOptPath.Equals(other.HasOptPath) &&
+                this.HasShortParadeLap.Equals(other.HasShortParadeLap) &&
+                this.HasSvgMap.Equals(other.HasSvgMap) &&
+                this.IsDirt.Equals(other.IsDirt) &&
+                this.IsOval.Equals(other.IsOval) &&
+                this.LapScoring.Equals(other.LapScoring) &&
+                this.Latitude.Equals(other.Latitude) &&
+                this.Location.Equals(other.Location) &&
+                this.Longitude.Equals(other.Longitude) &&
+                this.MaxCars.Equals(other.MaxCars) &&
+                this.NightLighting.Equals(other.NightLighting) &&
+                this.NominalLapTime.Equals(other.NominalLapTime) &&
+                this.NumberPitstalls.Equals(other.NumberPitstalls) &&
+                this.Opens.Equals(other.Opens) &&
+                this.PackageId.Equals(other.PackageId) &&
+                this.PitRoadSpeedLimit.Equals(other.PitRoadSpeedLimit) &&
+                this.Price.Equals(other.Price) &&
+                this.Priority.Equals(other.Priority) &&
+                this.Purchasable.Equals(other.Purchasable) &&
+                this.QualifyLaps.Equals(other.QualifyLaps) &&
+                this.RestartOnLeft.Equals(other.RestartOnLeft) &&
+                this.Retired.Equals(other.Retired) &&
+                this.SearchFilters.Equals(other.SearchFilters) &&
+                this.SiteUrl.Equals(other.SiteUrl) &&
+                this.Sku.Equals(other.Sku) &&
+                this.SoloLaps.Equals(other.SoloLaps) &&
+                this.StartOnLeft.Equals(other.StartOnLeft) &&
+                this.SupportsGripCompound.Equals(other.SupportsGripCompound) &&
+                this.TechTrack.Equals(other.TechTrack) &&
+                this.TimeZone.Equals(other.TimeZone) &&
+                this.TrackConfigLength.Equals(other.TrackConfigLength) &&
+                this.TrackDirpath.Equals(other.TrackDirpath) &&
+                this.Banking.Equals(other.Banking);
+        }
     }
 }
