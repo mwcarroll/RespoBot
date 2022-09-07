@@ -28,6 +28,7 @@ namespace RespoBot.Data.Classes
         public bool Equals(LicenseInfo other)
         {
             if (other == null) return false;
+
             return
                 this.Id.Equals(other.Id) &&
                 this.iRacingMemberId.Equals(other.iRacingMemberId) &&
@@ -44,6 +45,5 @@ namespace RespoBot.Data.Classes
                 this.MprNumberOfRaces.Equals(other.MprNumberOfRaces) &&
                 this.MprNumberOfTimeTrials.Equals(other.MprNumberOfTimeTrials);
         }
-
     }
 }

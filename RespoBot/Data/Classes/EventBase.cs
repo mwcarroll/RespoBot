@@ -5,7 +5,7 @@ using System;
 
 namespace RespoBot.Data.Classes
 {
-    public class EventBase
+    public class EventBase : IEquatable<EventBase>
     {
         [Key]
         [Identity]
@@ -43,5 +43,43 @@ namespace RespoBot.Data.Classes
         public int EventStrengthOfField { get; set; }
         public long EventAverageLap { get; set; }
         public long EventBestLapTime { get; set; }
+
+        public bool Equals(EventBase other)
+        {
+            if (other == null) return false;
+
+            return
+                this.Id.Equals(other.Id) &&
+                this.iRacingMemberId.Equals(other.iRacingMemberId) &&
+                this.SessionId.Equals(other.SessionId) &&
+                this.SubsessionId.Equals(other.SubsessionId) &&
+                this.StartTime.Equals(other.StartTime) &&
+                this.EndTime.Equals(other.EndTime) &&
+                this.LicenseCategoryId.Equals(other.LicenseCategoryId) &&
+                this.LicenseCategory.Equals(other.LicenseCategory) &&
+                this.NumberOfDrivers.Equals(other.NumberOfDrivers) &&
+                this.NumberOfCautions.Equals(other.NumberOfCautions) &&
+                this.NumberOfCautionLaps.Equals(other.NumberOfCautionLaps) &&
+                this.NumberOfLeadChanges.Equals(other.NumberOfLeadChanges) &&
+                this.EventLapsComplete.Equals(other.EventLapsComplete) &&
+                this.DriverChanges.Equals(other.DriverChanges) &&
+                this.WinnerGroupId.Equals(other.WinnerGroupId) &&
+                this.WinnerName.Equals(other.WinnerName) &&
+                this.WinnerAi.Equals(other.WinnerAi) &&
+                this.TrackId.Equals(other.TrackId) &&
+                this.OfficialSession.Equals(other.OfficialSession) &&
+                this.SeasonId.Equals(other.SeasonId) &&
+                this.SeasonYear.Equals(other.SeasonYear) &&
+                this.SeasonQuarter.Equals(other.SeasonQuarter) &&
+                this.EventType.Equals(other.EventType) &&
+                this.EventTypeName.Equals(other.EventTypeName) &&
+                this.SeriesId.Equals(other.SeriesId) &&
+                this.SeriesName.Equals(other.SeriesName) &&
+                this.SeriesShortName.Equals(other.SeriesShortName) &&
+                this.RaceWeekIndex.Equals(other.RaceWeekIndex) &&
+                this.EventStrengthOfField.Equals(other.EventStrengthOfField) &&
+                this.EventAverageLap.Equals(other.EventAverageLap) &&
+                this.EventBestLapTime.Equals(other.EventBestLapTime);
+        }
     }
 }

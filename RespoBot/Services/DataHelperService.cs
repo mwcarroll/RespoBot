@@ -50,7 +50,7 @@ namespace RespoBot.Services
             // UpdateEventTypes();
             // UpdateTracks();
             // UpdateCars();
-            RepopulatePublicRaces();
+            // RepopulatePublicRaces();
         }
 
         public async void RepopulatePublicRaces()
