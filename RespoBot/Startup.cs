@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using RespoBot.Data.DbContexts;
 using RespoBot.Services;
+using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot
 {
@@ -74,6 +75,8 @@ namespace RespoBot
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
             services.AddSingleton<CommandHandler>();
+
+            services.AddSingleton<RateLimitService>();
 
             //services.AddSingleton<StatsMassUpdaterService>();
             //services.AddSingleton<PublicRacesService>();

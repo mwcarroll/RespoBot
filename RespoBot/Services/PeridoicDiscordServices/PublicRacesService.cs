@@ -14,7 +14,7 @@ using RespoBot.Data.DbContexts;
 
 namespace RespoBot.Services.PeriodicServices
 {
-    public class PublicRacesService : PeriodicService
+    public class PublicRacesService : PeriodicDiscordService
     {
         private readonly string _connectionString;
 
@@ -28,7 +28,7 @@ namespace RespoBot.Services.PeriodicServices
         private readonly IDataClient IRacingDataClient;
 
         public PublicRacesService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, IDataClient iRacingDataClient, DiscordSocketClient discordClient) :
-            base(configuration, logger, discordClient, "PublicRacesService")
+            base(configuration, logger, discordClient, nameof(PublicRacesService))
         {
             Configuration = configuration;
             Logger = logger;

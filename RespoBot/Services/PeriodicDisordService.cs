@@ -8,7 +8,7 @@ using Discord.WebSocket;
 
 namespace RespoBot.Services
 {
-    public class PeriodicService
+    public class PeriodicDiscordService
     {
         private readonly IConfiguration Configuration;
         private readonly ILogger<EntryPoint> Logger;
@@ -20,7 +20,7 @@ namespace RespoBot.Services
         private DateTime _nextRunTime;
 
 
-        public PeriodicService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
+        public PeriodicDiscordService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
         {
             Configuration = configuration;
             Logger = logger;

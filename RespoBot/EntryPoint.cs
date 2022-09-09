@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using RespoBot.Services;
 using Microsoft.Extensions.DependencyInjection;
+using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot
 {
@@ -32,6 +33,9 @@ namespace RespoBot
 
         public async Task Run(String[] args)
         {
+            await ServiceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
+            ServiceProvider.GetRequiredService<DataHelperService>().Run();
+
             //Client.Ready += Client_Ready;
             //Client.Log += Log;
             //Commands.Log += Log;
@@ -42,7 +46,6 @@ namespace RespoBot
             //await ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
             //ServiceProvider.GetRequiredService<StatsMassUpdaterService>().Initialize();
             //ServiceProvider.GetRequiredService<PublicRacesService>().Initialize();
-            ServiceProvider.GetRequiredService<DataHelperService>().Run();
 
             await Task.Delay(Timeout.Infinite);
         }
