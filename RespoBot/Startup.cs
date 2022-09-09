@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Aydsko.iRacingData;
 using Dapper.Extensions.Caching.Memory;
 using Discord.Interactions;
@@ -9,6 +7,8 @@ using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
 using RespoBot.Services.PeriodicServices;
+using System;
+using System.IO;
 
 namespace RespoBot
 {
@@ -68,6 +68,7 @@ namespace RespoBot
             services.AddSingleton<CommandHandler>();
 
             services.AddSingleton<RateLimitService>();
+            services.AddSingleton<RequestHandlerService>();
 
             //services.AddSingleton<StatsMassUpdaterService>();
             //services.AddSingleton<PublicRacesService>();

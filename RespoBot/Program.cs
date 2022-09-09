@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace RespoBot
 {
     public class Program
     {
-        public static async Task Main(String[] args)
+        public static async Task Main(string[] args)
         {
             IServiceCollection services = Startup.ConfigureServices();
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            await serviceProvider.GetService<EntryPoint>().Run(args);
+            await serviceProvider.GetService<EntryPoint>()!.Run(args);
         }
 
         public static bool IsDebug()

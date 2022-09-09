@@ -1,12 +1,12 @@
-using System;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using System.Threading.Tasks;
-using System.Threading;
-using RespoBot.Services;
 using Microsoft.Extensions.DependencyInjection;
+using RespoBot.Services;
 using RespoBot.Services.PeriodicServices;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RespoBot
 {
@@ -29,7 +29,7 @@ namespace RespoBot
             _commands = commands;
         }
 
-        public async Task Run(String[] args)
+        public async Task Run(string[] args)
         {
             await _serviceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
             _serviceProvider.GetRequiredService<DataHelperService>().Run();

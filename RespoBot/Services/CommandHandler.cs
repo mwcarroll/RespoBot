@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
-
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace RespoBot.Services
 {

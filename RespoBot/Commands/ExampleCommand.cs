@@ -1,6 +1,5 @@
-﻿using System.Threading.Tasks;
-
-using Discord.Interactions;
+﻿using Discord.Interactions;
+using System.Threading.Tasks;
 
 namespace RespoBot.Commands
 {

@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot.Services
 {
@@ -18,9 +17,9 @@ namespace RespoBot.Services
 
         private readonly iRApi.IDataClient _racingDataClient;
 
-        private readonly RateLimitService _rateLimitService;
+        private readonly RequestHandlerService _requestHandlerService;
 
-        public DataHelperService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, iRApi.IDataClient iRacingDataClient, RateLimitService rateLimitService)
+        public DataHelperService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, iRApi.IDataClient iRacingDataClient, RequestHandlerService requestHandlerService)
         {
             _configuration = configuration;
             _logger = logger;
@@ -31,7 +30,7 @@ namespace RespoBot.Services
 
             _racingDataClient = iRacingDataClient;
 
-            _rateLimitService = rateLimitService;
+            _requestHandlerService = requestHandlerService;
         }
 
         public void Run()
@@ -42,12 +41,12 @@ namespace RespoBot.Services
             RepopulatePublicRaces();
         }
 
-        public async void RepopulatePublicRaces()
+        private async void RepopulatePublicRaces()
         {
             try
             {
-                int[] eventIdsToSearch = new int[] { _db.EventTypes.Find(x => x.Label == "Race").Value };
-                IEnumerable<DataContext.Member> members = _db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo);
+                int[] eventIdsToSearch = { (await _db.EventTypes.FindAsync(x => x.Label == "Race"))!.Value };
+                IEnumerable<DataContext.Member> members = await _db.Members.FindAllAsync<DataContext.MemberInfo>(null, p => p.MemberInfo);
                 DateTime dateNow = DateTime.UtcNow;
                 int expectedRequests = (int) members.Sum(member => Math.Ceiling((dateNow - member.MemberInfo.MemberSince).TotalDays / 90));
 
@@ -60,7 +59,7 @@ namespace RespoBot.Services
 
                     while(dateIterator > member.MemberInfo.MemberSince)
                     {
-                        await _rateLimitService.AddRequest(
+                        await _requestHandlerService.AddRequest(
                                 _racingDataClient.SearchOfficialResultsAsync(new iRApi.Searches.OfficialSearchParameters()
                                 {
                                     StartRangeBegin = (dateIterator.AddDays(-90) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : dateIterator.AddDays(-90),
@@ -79,7 +78,7 @@ namespace RespoBot.Services
                 }
 
                 List<Task<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader Header, iRApi.Searches.OfficialSearchResultItem[] Items)>>> responses =
-                    _rateLimitService.GetResponses<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader, iRApi.Searches.OfficialSearchResultItem[])>> (requestGroup);
+                    _requestHandlerService.GetResponses<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader, iRApi.Searches.OfficialSearchResultItem[])>> (requestGroup);
 
                 Parallel.ForEach(
                     responses,
@@ -93,23 +92,25 @@ namespace RespoBot.Services
                                         _mapper.Map<DataContext.Events.PublicEvents>(
                                             item,
                                             (opts) => {
-                                                opts.AfterMap((src, dest) =>
+                                                opts.AfterMap((_, dest) =>
                                                 {
-                                                    dest.IRacingMemberId = (int)response.Result.Data.Header.Data.Params.ParticipantCustomerId;
+                                                    if (response.Result.Data.Header.Data.Params.ParticipantCustomerId != null)
+                                                        dest.IRacingMemberId = (int)response.Result.Data.Header.Data.Params.ParticipantCustomerId;
+                                                    else
+                                                        throw new iRApi.Exceptions.iRacingDataClientException("Participant Customer Id null");
                                                 });
                                             }
                                         ));
                                 });
                     });
 
-                _db.PublicEvents.Delete(predicate: null);
-                _db.PublicEvents.BulkInsert(mappedRaces.OrderBy(x => x.StartTime).ToList());
-                _db.Members.BulkUpdate(members);
+                await _db.PublicEvents.DeleteAsync(predicate: null);
+                await _db.PublicEvents.BulkInsertAsync(mappedRaces.OrderBy(x => x.StartTime).ToList());
+                await _db.Members.BulkUpdateAsync(members);
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, ex.Message);
-                return;
             }
         }
 
@@ -119,8 +120,8 @@ namespace RespoBot.Services
 
             DataContext.CarInfo[] mappedCars = _mapper.Map<DataContext.CarInfo[]>(rawCars);
 
-            _db.CarInfos.Delete(predicate: null);
-            _db.CarInfos.BulkInsert(mappedCars);
+            await _db.CarInfos.DeleteAsync(predicate: null);
+            await _db.CarInfos.BulkInsertAsync(mappedCars);
         }
 
         public async void UpdateEventTypes()
@@ -129,8 +130,8 @@ namespace RespoBot.Services
 
             DataContext.EventType[] mappedEventTypes = _mapper.Map<DataContext.EventType[]>(rawEventTypes);
 
-            _db.EventTypes.Delete(predicate: null);
-            _db.EventTypes.BulkInsert(mappedEventTypes);
+            await _db.EventTypes.DeleteAsync(predicate: null);
+            await _db.EventTypes.BulkInsertAsync(mappedEventTypes);
         }
 
         public async void UpdateTracks()
@@ -139,8 +140,8 @@ namespace RespoBot.Services
 
             DataContext.Track[] mappedTracks = _mapper.Map<DataContext.Track[]>(rawTracks);
 
-            _db.Tracks.Delete(predicate: null);
-            _db.Tracks.BulkInsert(mappedTracks);
+            await _db.Tracks.DeleteAsync(predicate: null);
+            await _db.Tracks.BulkInsertAsync(mappedTracks);
         }
     }
 }
