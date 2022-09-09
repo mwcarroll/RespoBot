@@ -63,17 +63,13 @@ namespace RespoBot.Services
         {
             try
             {
-                ConcurrentBag<DataContext.Events.PublicEvents> mappedRaces = new();
-
                 int[] eventIdsToSearch = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value };
-
                 IEnumerable<DataContext.Member> members = Db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo);
-
                 DateTime dateNow = DateTime.UtcNow;
-
                 int numberOfExpectedRequests = (int) members.Sum(m => Math.Ceiling((dateNow - m.MemberInfo.MemberSince).TotalDays / 90));
 
                 List<Task<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)>>> responses = new();
+                ConcurrentBag<DataContext.Events.PublicEvents> mappedRaces = new();
 
                 foreach (DataContext.Member member in members)
                 {
@@ -81,8 +77,6 @@ namespace RespoBot.Services
 
                     while(dateIterator > member.MemberInfo.MemberSince)
                     {
-                        var delay = RateLimitService.GetPerRequestDelay(numberOfExpectedRequests);
-
                         // throttle next request, so we do not get rate limited (hopefully)
                         await Task.Delay(RateLimitService.GetPerRequestDelay(numberOfExpectedRequests));
 
