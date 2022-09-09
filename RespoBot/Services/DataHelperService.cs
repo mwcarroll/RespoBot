@@ -9,19 +9,22 @@ using System.Reflection.PortableExecutable;
 
 using Aydsko.iRacingData;
 using iRApiCars = Aydsko.iRacingData.Cars;
+using iRApiCommon = Aydsko.iRacingData.Common;
 using iRApiConstants = Aydsko.iRacingData.Constants;
+using iRApiLookups = Aydsko.iRacingData.Lookups;
 using iRApiSearches = Aydsko.iRacingData.Searches;
 using iRApiTracks = Aydsko.iRacingData.Tracks;
 
 using DataContext = RespoBot.Data.Classes;
 using RespoBot.Data.DbContexts;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using Discord.Net;
 
 namespace RespoBot.Services
 {
     public class DataHelperService
     {
-        private readonly string _connectionString;
-
         private readonly IConfiguration Configuration;
         private readonly ILogger<EntryPoint> Logger;
 
@@ -41,8 +44,6 @@ namespace RespoBot.Services
             Mapper = mapper;
 
             IRacingDataClient = iRacingDataClient;
-
-            _connectionString = Configuration.GetConnectionString("Default");
         }
 
         public void Run()
@@ -50,59 +51,87 @@ namespace RespoBot.Services
             // UpdateEventTypes();
             // UpdateTracks();
             // UpdateCars();
-            // RepopulatePublicRaces();
+            RepopulatePublicRaces();
         }
 
         public async void RepopulatePublicRaces()
         {
-            List<DataContext.Events.PublicEvents> mappedRaces = new();
-
-            foreach (DataContext.Member member in Db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo))
+            try
             {
-                DateTime dateToSearch = DateTime.UtcNow;
+                ConcurrentBag<DataContext.Events.PublicEvents> mappedRaces = new();
 
-                while (dateToSearch > member.MemberInfo.MemberSince)
+                int[] eventIdsToSearch = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value };
+
+                IEnumerable<DataContext.Member> members = Db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo);
+
+                await IRacingDataClient.GetMyInfoAsync();
+                iRApiCommon.DataResponse<iRApiLookups.LookupGroup[]> initial = await IRacingDataClient.GetLookupsAsync();
+                DateTimeOffset rateLimitReset = (DateTimeOffset)initial.RateLimitReset;
+                int totalRateLimit = (int)initial.TotalRateLimit;
+
+                List<Func<Task<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)>>>> searchTasks = new();
+                
+                foreach(DataContext.Member member in members)
                 {
-                    try
-                    {
-                        (iRApiSearches.OfficialSearchResultHeader header, iRApiSearches.OfficialSearchResultItem[] races) =
-                            (await IRacingDataClient.SearchOfficialResultsAsync(new iRApiSearches.OfficialSearchParameters()
-                            {
-                                StartRangeBegin = dateToSearch.AddDays(-90),
-                                StartRangeEnd = dateToSearch,
-                                ParticipantCustomerId = member.iRacingMemberId,
-                                EventTypes = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value }
-                            })).Data;
+                    DateTime iterator = DateTime.UtcNow;
 
-                        if(races.Length > 0)
-                            mappedRaces.AddRange(
-                                Mapper.Map<DataContext.Events.PublicEvents[]>(
-                                    races,
-                                    opts => opts.AfterMap((src, dest) =>
-                                        {
-                                            for (int i = 0; i < dest.Length; i++)
-                                            {
-                                                dest[i].iRacingMemberId = member.iRacingMemberId;
-                                            }
-                                        }
-                                    )
-                                )
-                            );
-
-                        dateToSearch = dateToSearch.AddDays(-90);
-                    }
-                    catch(Exception ex)
+                    while(iterator > member.MemberInfo.MemberSince)
                     {
-                        Logger.LogCritical(ex, ex.Message);
-                        return;
+                        DateTime newIterator = (iterator.AddDays(-90) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : iterator.AddDays(-90);
+
+                        // we need "local" copies of the iterator and member due to lambda usage
+                        DateTime localIterator = iterator;
+                        DataContext.Member localMember = member;
+
+                        searchTasks.Add(() => Task.Run(() =>
+                        {
+                            return IRacingDataClient.SearchOfficialResultsAsync(new iRApiSearches.OfficialSearchParameters()
+                                {
+                                    StartRangeBegin = newIterator,
+                                    StartRangeEnd = localIterator,
+                                    ParticipantCustomerId = member.iRacingMemberId,
+                                    EventTypes = eventIdsToSearch
+                                });
+
+                        }));
+
+                        iterator = newIterator;
                     }
                 }
+
+                // TODO: throttle task invoke, within the rate limit values
+                var responses = await Task.WhenAll(searchTasks.Select(async task => await task.Invoke()));
+
+                foreach (iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)> response in responses)
+                {
+                    if(response.Data.Items.Any())
+                        foreach(iRApiSearches.OfficialSearchResultItem item in response.Data.Items)
+                        {
+                            mappedRaces
+                                .Add(
+                                    Mapper.Map<DataContext.Events.PublicEvents>(
+                                        item,
+                                        opts =>
+                                        {
+                                            opts.AfterMap((src, dest) =>
+                                            {
+                                                dest.iRacingMemberId = (int)response.Data.Header.Data.Params.ParticipantCustomerId;
+                                            });
+                                        }
+                                    )
+                                );
+                        }
+                }
+
+                Db.PublicEvents.Delete(predicate: null);
+                Db.PublicEvents.BulkInsert(mappedRaces.OrderBy(x => x.StartTime).ToList());
+                Db.Members.BulkUpdate(members);
             }
-
-            mappedRaces = mappedRaces.OrderBy(x => x.StartTime).ToList();
-
-            Db.PublicEvents.Delete(predicate: null);
-            Db.PublicEvents.BulkInsert(mappedRaces);
+            catch (Exception ex)
+            {
+                Logger.LogCritical(ex, ex.Message);
+                return;
+            }
         }
 
         public async void UpdateCars()
