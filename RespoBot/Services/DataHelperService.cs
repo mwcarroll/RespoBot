@@ -66,9 +66,10 @@ namespace RespoBot.Services
                 int[] eventIdsToSearch = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value };
                 IEnumerable<DataContext.Member> members = Db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo);
                 DateTime dateNow = DateTime.UtcNow;
-                int numberOfExpectedRequests = (int) members.Sum(m => Math.Ceiling((dateNow - m.MemberInfo.MemberSince).TotalDays / 90));
+                int expectedRequests = (int) members.Sum(m => Math.Ceiling((dateNow - m.MemberInfo.MemberSince).TotalDays / 90));
 
-                List<Task<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)>>> responses = new();
+                Guid requestGroup = Guid.NewGuid();
+
                 ConcurrentBag<DataContext.Events.PublicEvents> mappedRaces = new();
 
                 foreach (DataContext.Member member in members)
@@ -77,18 +78,16 @@ namespace RespoBot.Services
 
                     while(dateIterator > member.MemberInfo.MemberSince)
                     {
-                        // throttle next request, so we do not get rate limited (hopefully)
-                        await Task.Delay(RateLimitService.GetPerRequestDelay(numberOfExpectedRequests));
-
-                        // fire off requests, will care about their response later...
-                        responses.Add(
-                            IRacingDataClient.SearchOfficialResultsAsync(new iRApiSearches.OfficialSearchParameters()
+                        await RateLimitService.AddRequest(
+                                IRacingDataClient.SearchOfficialResultsAsync(new iRApiSearches.OfficialSearchParameters()
                                 {
                                     StartRangeBegin = (dateIterator.AddDays(-90) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : dateIterator.AddDays(-90),
                                     StartRangeEnd = dateIterator,
                                     ParticipantCustomerId = member.iRacingMemberId,
                                     EventTypes = eventIdsToSearch
-                                })
+                                }),
+                                requestGroup,
+                                expectedRequests
                             );
 
                         // advance iterator
@@ -98,7 +97,8 @@ namespace RespoBot.Services
                     member.LastChecked = dateNow;
                 }
 
-                await Task.WhenAll(responses);
+                List<Task<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)>>> responses =
+                    RateLimitService.GetResponses<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader, iRApiSearches.OfficialSearchResultItem[])>> (requestGroup);
 
                 Parallel.ForEach(
                     responses,
