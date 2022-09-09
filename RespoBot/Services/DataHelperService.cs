@@ -90,7 +90,6 @@ namespace RespoBot.Services
                                 expectedRequests
                             );
 
-                        // advance iterator
                         dateIterator = (dateIterator.AddDays(-90) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : dateIterator.AddDays(-90);
                     }
 
@@ -111,15 +110,13 @@ namespace RespoBot.Services
                                     mappedRaces.Add(
                                         Mapper.Map<DataContext.Events.PublicEvents>(
                                             item,
-                                            opts =>
-                                            {
+                                            (opts) => {
                                                 opts.AfterMap((src, dest) =>
                                                 {
                                                     dest.iRacingMemberId = (int)response.Result.Data.Header.Data.Params.ParticipantCustomerId;
                                                 });
                                             }
-                                        )
-                                    );
+                                        ));
                                 });
                     });
 

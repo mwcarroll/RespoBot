@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Concurrent;
 
 namespace RespoBot.Services.PeriodicServices
 {
@@ -28,7 +27,8 @@ namespace RespoBot.Services.PeriodicServices
         private int _totalRateLimit;
         private int _rateLimitRemaining;
 
-        private Dictionary<Task, Guid> pendingRequests = new();
+        private Dictionary<Task, Guid> _pendingRequests = new();
+        private int _expectedRequests = 0;
 
         public RateLimitService(IConfiguration configuration, ILogger<EntryPoint> logger, IDataClient iRacingDataClient)
         {
@@ -82,33 +82,40 @@ namespace RespoBot.Services.PeriodicServices
             }
         }
 
-        public int GetPerRequestDelay(int expectedRequests)
+        private int GetPerRequestDelay()
         {
             double rateLimitThreshold = Configuration.GetValue<double>($"RespoBot:RateLimit:Threshold");
+            int minimumDelay = Configuration.GetValue<int>($"RespoBot:RateLimit:MinimumDelayMilliseconds");
 
-            if (expectedRequests < ((int)(_rateLimitRemaining * rateLimitThreshold)))
-                return Configuration.GetValue<int>($"RespoBot:RateLimit:MinimumDelayMilliseconds");
-            if (expectedRequests < _totalRateLimit)
-                return (int)((_rateLimitReset.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / (expectedRequests * rateLimitThreshold));
-            else
-                return (int)((_rateLimitReset.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / (_totalRateLimit * rateLimitThreshold));
+            int delay = minimumDelay;
+
+            if(_expectedRequests > ((int)(_rateLimitRemaining * rateLimitThreshold)))
+                delay = (int)((_rateLimitReset.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / (_totalRateLimit * rateLimitThreshold));
+
+            return (delay > minimumDelay) ? delay : minimumDelay;
         }
 
-        
-
         public async Task AddRequest<TData>(Task<TData> request, Guid requestGroup, int expectedRequests){
-            pendingRequests.Add(request, requestGroup);
+            _pendingRequests.Add(request, requestGroup);
 
-            await Task.Delay(GetPerRequestDelay(expectedRequests));
+            if(!_pendingRequests.Where(x => x.Value.Equals(requestGroup)).Any())
+                _expectedRequests += expectedRequests;
+
+            await Task.Delay(GetPerRequestDelay());
         }
 
         public List<Task<TData>> GetResponses<TData>(Guid requestGroup)
         {
-            List<Task<TData>> responses = pendingRequests.Where(x => x.Value.Equals(requestGroup)).Select(x => (Task<TData>) x.Key).ToList();
+            List<Task<TData>> responses = _pendingRequests.Where(x => x.Value.Equals(requestGroup)).Select(x => (Task<TData>) x.Key).ToList();
 
-            pendingRequests = pendingRequests.Where(x => !x.Value.Equals(requestGroup)).ToDictionary(x => x.Key, x => x.Value);
+            _pendingRequests = _pendingRequests.Where(x => !x.Value.Equals(requestGroup)).ToDictionary(x => x.Key, x => x.Value);
 
             Task.WhenAll(responses);
+
+            if (!_pendingRequests.Any())
+                _expectedRequests = 0;
+            else 
+                _expectedRequests = ((_expectedRequests - responses.Count) >= 0) ? (_expectedRequests - responses.Count) : 0;
 
             return responses;
         }
