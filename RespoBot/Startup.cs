@@ -1,9 +1,11 @@
 using System;
 using System.Data;
 using System.IO;
+using System.Net;
 using AutoMapper;
 using Aydsko.iRacingData;
 using Dapper;
+using Dapper.Extensions.Caching.Memory;
 using Dapper.FluentMap.Mapping;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -11,6 +13,7 @@ using MicroOrm.Dapper.Repositories.Config;
 using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using RespoBot.Data.DbContexts;
 using RespoBot.Services;
@@ -44,6 +47,11 @@ namespace RespoBot
             services.AddSingleton(typeof(ISqlGenerator<>), typeof(SqlGenerator<>));
             services.AddSingleton<IDbContext>(x => new MsSqlDbContext(configuration.GetConnectionString("Default")));
 
+            services.AddDapperCachingInMemory(new MemoryConfiguration
+            {
+                AllMethodsEnableCache = false
+            });
+
             services.AddSingleton(
                 new MapperConfiguration(mc =>
                 {
@@ -60,6 +68,8 @@ namespace RespoBot
                 options.UserAgentProductName = "RespoBot";
                 options.UserAgentProductVersion = new Version(1, 0);
             });
+
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
 
             services.AddSingleton<DiscordSocketClient>();
             services.AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()));
