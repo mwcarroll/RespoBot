@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 
-using Aydsko.iRacingData;
-using Aydsko.iRacingData.Member;
+using iRApi = Aydsko.iRacingData;
 
 using Discord.WebSocket;
 
@@ -27,9 +26,9 @@ namespace RespoBot.Services.PeriodicServices
 
         private readonly IMapper Mapper;
 
-        private readonly IDataClient IRacingDataClient;
+        private readonly iRApi.IDataClient IRacingDataClient;
 
-        public StatsMassUpdaterService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, IDataClient iRacingDataClient, DiscordSocketClient discordClient) :
+        public StatsMassUpdaterService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, iRApi.IDataClient iRacingDataClient, DiscordSocketClient discordClient) :
             base(configuration, logger, discordClient, nameof(StatsMassUpdaterService))
         {
             Configuration = configuration;
@@ -56,11 +55,11 @@ namespace RespoBot.Services.PeriodicServices
                 IEnumerable<DataContext.MemberInfo> memberInfos = Db.MemberInfos.FindAll();
                 IEnumerable<DataContext.LicenseInfo> licenseInfos = Db.LicenseInfos.FindAll();
 
-                DriverInfo[] currentDriverInfos = (await IRacingDataClient.GetDriverInfoAsync(customerIds: members.Select(x => x.iRacingMemberId).ToArray(), includeLicenses: true)).Data;
+                iRApi.Member.DriverInfo[] currentDriverInfos = (await IRacingDataClient.GetDriverInfoAsync(customerIds: members.Select(x => x.iRacingMemberId).ToArray(), includeLicenses: true)).Data;
 
                 foreach (DataContext.Member member in members)
                 {
-                    DriverInfo currentDriverInfo = currentDriverInfos.Where(x => x.CustomerId == member.iRacingMemberId).FirstOrDefault();
+                    iRApi.Member.DriverInfo currentDriverInfo = currentDriverInfos.Where(x => x.CustomerId == member.iRacingMemberId).FirstOrDefault();
                     DataContext.MemberInfo cachedMemberInfo = memberInfos.FirstOrDefault(x => x.iRacingMemberId == member.iRacingMemberId);
 
                     if (cachedMemberInfo == null)
@@ -84,7 +83,7 @@ namespace RespoBot.Services.PeriodicServices
                     }
 
                     DataContext.LicenseInfo[] cachedLicenseInfo = licenseInfos.Where(x => x.iRacingMemberId == member.iRacingMemberId).ToArray();
-                    LicenseInfo[] currentLicenseInfos = currentDriverInfo.Licenses;
+                    iRApi.Member.LicenseInfo[] currentLicenseInfos = currentDriverInfo.Licenses;
 
                     DataContext.LicenseInfo[] dataToUpsert = Mapper.Map<DataContext.LicenseInfo[]>(
                         currentLicenseInfos,

@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-
-using Aydsko.iRacingData;
-using iRApiCommon = Aydsko.iRacingData.Common;
-using iRApiLookups = Aydsko.iRacingData.Lookups;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
+
+
+using iRApi = Aydsko.iRacingData;
 
 namespace RespoBot.Services.PeriodicServices
 {
@@ -21,7 +20,7 @@ namespace RespoBot.Services.PeriodicServices
 
         private DateTime _nextRunTime;
 
-        private readonly IDataClient IRacingDataClient;
+        private readonly iRApi.IDataClient IRacingDataClient;
 
         private DateTimeOffset _rateLimitReset;
         private int _totalRateLimit;
@@ -30,7 +29,7 @@ namespace RespoBot.Services.PeriodicServices
         private Dictionary<Task, Guid> _pendingRequests = new();
         private int _expectedRequests = 0;
 
-        public RateLimitService(IConfiguration configuration, ILogger<EntryPoint> logger, IDataClient iRacingDataClient)
+        public RateLimitService(IConfiguration configuration, ILogger<EntryPoint> logger, iRApi.IDataClient iRacingDataClient)
         {
             Configuration = configuration;
             Logger = logger;
@@ -43,7 +42,7 @@ namespace RespoBot.Services.PeriodicServices
         public async Task UpdateRateLimits()
         {
             await IRacingDataClient.GetMyInfoAsync();
-            iRApiCommon.DataResponse<iRApiLookups.LookupGroup[]> response = await IRacingDataClient.GetLookupsAsync();
+            iRApi.Common.DataResponse<iRApi.Lookups.LookupGroup[]> response = await IRacingDataClient.GetLookupsAsync();
 
             _rateLimitReset = (DateTimeOffset)response.RateLimitReset;
             _totalRateLimit = (int)response.TotalRateLimit;

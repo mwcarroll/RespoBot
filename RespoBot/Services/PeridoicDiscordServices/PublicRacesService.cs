@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
-using Aydsko.iRacingData;
+using iRApi = Aydsko.iRacingData;
 
 using Discord.WebSocket;
 
@@ -25,9 +25,9 @@ namespace RespoBot.Services.PeriodicServices
 
         private readonly IMapper Mapper;
 
-        private readonly IDataClient IRacingDataClient;
+        private readonly iRApi.IDataClient IRacingDataClient;
 
-        public PublicRacesService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, IDataClient iRacingDataClient, DiscordSocketClient discordClient) :
+        public PublicRacesService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, iRApi.IDataClient iRacingDataClient, DiscordSocketClient discordClient) :
             base(configuration, logger, discordClient, nameof(PublicRacesService))
         {
             Configuration = configuration;

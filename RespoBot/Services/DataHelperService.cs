@@ -4,22 +4,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Reflection.PortableExecutable;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
-using Aydsko.iRacingData;
-using iRApiCars = Aydsko.iRacingData.Cars;
-using iRApiCommon = Aydsko.iRacingData.Common;
-using iRApiConstants = Aydsko.iRacingData.Constants;
-using iRApiLookups = Aydsko.iRacingData.Lookups;
-using iRApiSearches = Aydsko.iRacingData.Searches;
-using iRApiTracks = Aydsko.iRacingData.Tracks;
+using iRApi = Aydsko.iRacingData;
 
 using DataContext = RespoBot.Data.Classes;
 using RespoBot.Data.DbContexts;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using Discord.Net;
 using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot.Services
@@ -33,11 +24,11 @@ namespace RespoBot.Services
 
         private readonly IMapper Mapper;
 
-        private readonly IDataClient IRacingDataClient;
+        private readonly iRApi.IDataClient IRacingDataClient;
 
         private readonly RateLimitService RateLimitService;
 
-        public DataHelperService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, IDataClient iRacingDataClient, RateLimitService rateLimitService)
+        public DataHelperService(IConfiguration configuration, ILogger<EntryPoint> logger, IDbContext db, IMapper mapper, iRApi.IDataClient iRacingDataClient, RateLimitService rateLimitService)
         {
             Configuration = configuration;
             Logger = logger;
@@ -66,10 +57,9 @@ namespace RespoBot.Services
                 int[] eventIdsToSearch = new int[] { Db.EventTypes.Find(x => x.Label == "Race").Value };
                 IEnumerable<DataContext.Member> members = Db.Members.FindAll<DataContext.MemberInfo>(null, p => p.MemberInfo);
                 DateTime dateNow = DateTime.UtcNow;
-                int expectedRequests = (int) members.Sum(m => Math.Ceiling((dateNow - m.MemberInfo.MemberSince).TotalDays / 90));
+                int expectedRequests = (int) members.Sum(member => Math.Ceiling((dateNow - member.MemberInfo.MemberSince).TotalDays / 90));
 
                 Guid requestGroup = Guid.NewGuid();
-
                 ConcurrentBag<DataContext.Events.PublicEvents> mappedRaces = new();
 
                 foreach (DataContext.Member member in members)
@@ -79,7 +69,7 @@ namespace RespoBot.Services
                     while(dateIterator > member.MemberInfo.MemberSince)
                     {
                         await RateLimitService.AddRequest(
-                                IRacingDataClient.SearchOfficialResultsAsync(new iRApiSearches.OfficialSearchParameters()
+                                IRacingDataClient.SearchOfficialResultsAsync(new iRApi.Searches.OfficialSearchParameters()
                                 {
                                     StartRangeBegin = (dateIterator.AddDays(-90) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : dateIterator.AddDays(-90),
                                     StartRangeEnd = dateIterator,
@@ -96,8 +86,8 @@ namespace RespoBot.Services
                     member.LastChecked = dateNow;
                 }
 
-                List<Task<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader Header, iRApiSearches.OfficialSearchResultItem[] Items)>>> responses =
-                    RateLimitService.GetResponses<iRApiCommon.DataResponse<(iRApiSearches.OfficialSearchResultHeader, iRApiSearches.OfficialSearchResultItem[])>> (requestGroup);
+                List<Task<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader Header, iRApi.Searches.OfficialSearchResultItem[] Items)>>> responses =
+                    RateLimitService.GetResponses<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader, iRApi.Searches.OfficialSearchResultItem[])>> (requestGroup);
 
                 Parallel.ForEach(
                     responses,
@@ -133,7 +123,7 @@ namespace RespoBot.Services
 
         public async void UpdateCars()
         {
-            iRApiCars.CarInfo[] rawCars = (await IRacingDataClient.GetCarsAsync()).Data;
+            iRApi.Cars.CarInfo[] rawCars = (await IRacingDataClient.GetCarsAsync()).Data;
 
             DataContext.CarInfo[] mappedCars = Mapper.Map<DataContext.CarInfo[]>(rawCars);
 
@@ -143,7 +133,7 @@ namespace RespoBot.Services
 
         public async void UpdateEventTypes()
         {
-            iRApiConstants.EventType[] rawEventTypes = (await IRacingDataClient.GetEventTypesAsync()).Data;
+            iRApi.Constants.EventType[] rawEventTypes = (await IRacingDataClient.GetEventTypesAsync()).Data;
 
             DataContext.EventType[] mappedEventTypes = Mapper.Map<DataContext.EventType[]>(rawEventTypes);
 
@@ -153,7 +143,7 @@ namespace RespoBot.Services
 
         public async void UpdateTracks()
         {
-            iRApiTracks.Track[] rawTracks = (await IRacingDataClient.GetTracksAsync()).Data;
+            iRApi.Tracks.Track[] rawTracks = (await IRacingDataClient.GetTracksAsync()).Data;
 
             DataContext.Track[] mappedTracks = Mapper.Map<DataContext.Track[]>(rawTracks);
 
