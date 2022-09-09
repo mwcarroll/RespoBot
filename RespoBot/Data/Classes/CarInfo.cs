@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace RespoBot.Data.Classes
 {
@@ -38,7 +36,7 @@ namespace RespoBot.Data.Classes
         public bool Retired { get; set; }
         public string SearchFilters { get; set; }
         public int Sku { get; set; }
-        public bool PaintRules_RestrictCustomPaint { get; set; }
+        public bool PaintRulesRestrictCustomPaint { get; set; }
         public string CarMake { get; set; }
         public string CarModel { get; set; }
         public string SiteUrl { get; set; }
@@ -75,7 +73,7 @@ namespace RespoBot.Data.Classes
                 object.Equals(this.Retired, other.Retired) &&
                 object.Equals(this.SearchFilters, other.SearchFilters) &&
                 object.Equals(this.Sku, other.Sku) &&
-                object.Equals(this.PaintRules_RestrictCustomPaint, other.PaintRules_RestrictCustomPaint) &&
+                object.Equals(this.PaintRulesRestrictCustomPaint, other.PaintRulesRestrictCustomPaint) &&
                 object.Equals(this.CarMake, other.CarMake) &&
                 object.Equals(this.CarModel, other.CarModel) &&
                 object.Equals(this.SiteUrl, other.SiteUrl);
@@ -125,7 +123,7 @@ namespace RespoBot.Data.Classes
                     this.Retired,
                     this.SearchFilters,
                     this.Sku,
-                    this.PaintRules_RestrictCustomPaint,
+                    PaintRules_RestrictCustomPaint: this.PaintRulesRestrictCustomPaint,
                     this.CarMake,
                     this.CarModel,
                     this.SiteUrl

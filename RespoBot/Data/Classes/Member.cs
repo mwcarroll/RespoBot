@@ -14,7 +14,7 @@ namespace RespoBot.Data.Classes
         public int Id { get; set; }
         public string Name { get; set; }
         [Column("iRacingMemberId")]
-        public int iRacingMemberId { get; set; }
+        public int IRacingMemberId { get; set; }
         [Column("discordMemberId")]
         public long DiscordMemberId { get; set; }
         public DateTime LastChecked { get; set; }

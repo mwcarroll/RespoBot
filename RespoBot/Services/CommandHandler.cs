@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -13,51 +11,51 @@ namespace RespoBot.Services
     public class CommandHandler
     {
 
-        private readonly IServiceProvider ServiceProvider;
-        private readonly IConfiguration Configuration;
-        private readonly ILogger<EntryPoint> Logger;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EntryPoint> _logger;
 
-        private readonly DiscordSocketClient Client;
-        private readonly InteractionService Commands;
+        private readonly DiscordSocketClient _client;
+        private readonly InteractionService _commands;
 
         public CommandHandler(IServiceProvider services, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient client, InteractionService commands)
         {
-            ServiceProvider = services;
-            Configuration = configuration;
-            Logger = logger;
-            Client = client;
-            Commands = commands;
+            _serviceProvider = services;
+            _configuration = configuration;
+            _logger = logger;
+            _client = client;
+            _commands = commands;
         }
 
         public async Task InitializeAsync()
         {
-            Logger.LogInformation($"Initializing CommandHandler");
+            _logger.LogInformation($"Initializing CommandHandler");
 
-            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), ServiceProvider);
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
-            Client.Ready += Client_Ready;
+            _client.Ready += Client_Ready;
 
-            Client.InteractionCreated += HandleInteraction;
+            _client.InteractionCreated += HandleInteraction;
 
-            Commands.SlashCommandExecuted += SlashCommandExecuted;
+            _commands.SlashCommandExecuted += SlashCommandExecuted;
         }
 
         private async Task Client_Ready()
         {
             if (Program.IsDebug())
             {
-                await Commands.RegisterCommandsToGuildAsync(Configuration.GetValue<ulong>("RespoBot:TestGuildId"), true);
+                await _commands.RegisterCommandsToGuildAsync(_configuration.GetValue<ulong>("RespoBot:TestGuildId"), true);
             }                
             else
-                await Commands.RegisterCommandsGloballyAsync(true);
+                await _commands.RegisterCommandsGloballyAsync(true);
         }
 
         private async Task HandleInteraction(SocketInteraction arg)
         {
             try
             {
-                SocketInteractionContext ctx = new(Client, arg);
-                await Commands.ExecuteCommandAsync(ctx, ServiceProvider);
+                SocketInteractionContext ctx = new(_client, arg);
+                await _commands.ExecuteCommandAsync(ctx, _serviceProvider);
             }
             catch (Exception ex)
             {
@@ -76,19 +74,19 @@ namespace RespoBot.Services
                 switch (arg3.Error)
                 {
                     case InteractionCommandError.UnmetPrecondition:
-                        Logger.LogInformation(message: arg3.ErrorReason, arg3);
+                        _logger.LogInformation(message: arg3.ErrorReason, arg3);
                         break;
                     case InteractionCommandError.UnknownCommand:
-                        Logger.LogInformation(message: arg3.ErrorReason, arg3);
+                        _logger.LogInformation(message: arg3.ErrorReason, arg3);
                         break;
                     case InteractionCommandError.BadArgs:
-                        Logger.LogInformation(message: arg3.ErrorReason, arg3);
+                        _logger.LogInformation(message: arg3.ErrorReason, arg3);
                         break;
                     case InteractionCommandError.Exception:
-                        Logger.LogCritical(message: arg3.ErrorReason, arg3);
+                        _logger.LogCritical(message: arg3.ErrorReason, arg3);
                         break;
                     case InteractionCommandError.Unsuccessful:
-                        Logger.LogError(message: arg3.ErrorReason, arg3);
+                        _logger.LogError(message: arg3.ErrorReason, arg3);
                         break;
                     default:
                         break;

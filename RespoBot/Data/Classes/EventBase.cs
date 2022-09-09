@@ -11,7 +11,7 @@ namespace RespoBot.Data.Classes
         [Identity]
         public int Id { get; set; }
         [Key]
-        public int iRacingMemberId { get; set; }
+        public int IRacingMemberId { get; set; }
         public int SessionId { get; set; }
         [Key]
         public int SubsessionId { get; set; }
@@ -50,7 +50,7 @@ namespace RespoBot.Data.Classes
 
             return
                 object.Equals(this.Id, other.Id) &&
-                object.Equals(this.iRacingMemberId, other.iRacingMemberId) &&
+                object.Equals(this.IRacingMemberId, other.IRacingMemberId) &&
                 object.Equals(this.SessionId, other.SessionId) &&
                 object.Equals(this.SubsessionId, other.SubsessionId) &&
                 object.Equals(this.StartTime, other.StartTime) &&
@@ -99,7 +99,7 @@ namespace RespoBot.Data.Classes
         {
             return (
                     this.Id,
-                    this.iRacingMemberId,
+                    iRacingMemberId: this.IRacingMemberId,
                     this.SessionId,
                     this.SubsessionId,
                     this.StartTime,

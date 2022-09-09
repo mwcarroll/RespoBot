@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using System;
+﻿using System;
 using System.Linq;
-using iRApi = Aydsko.iRacingData;
-using DataContext = RespoBot.Data.Classes;
 
 namespace RespoBot
 {
@@ -13,7 +10,7 @@ namespace RespoBot
             CreateMap<iRApi.Cars.CarInfo, DataContext.CarInfo>()
                 .ForMember(dest => dest.CarTypes, opt => opt.MapFrom(src => string.Join(',', src.CarTypes.Select(x => x.CarType))))
                 .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => string.Join(',', src.Categories)))
-                .ForMember(dest => dest.PaintRules_RestrictCustomPaint, opt => opt.MapFrom(src => src.PaintRules != null && src.PaintRules.RestrictCustomPaint));
+                .ForMember(dest => dest.PaintRulesRestrictCustomPaint, opt => opt.MapFrom(src => src.PaintRules != null && src.PaintRules.RestrictCustomPaint));
 
             CreateMap<iRApi.Constants.EventType, DataContext.EventType>();
 

@@ -1,26 +1,23 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-
-using iRApi = Aydsko.iRacingData;
 
 namespace RespoBot.Services.PeriodicServices
 {
     public class RateLimitService
     {
-        private readonly IConfiguration Configuration;
-        private readonly ILogger<EntryPoint> Logger;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EntryPoint> _logger;
 
         private readonly string _serviceName;
 
         private DateTime _nextRunTime;
 
-        private readonly iRApi.IDataClient IRacingDataClient;
+        private readonly iRApi.IDataClient _racingDataClient;
 
         private DateTimeOffset _rateLimitReset;
         private int _totalRateLimit;
@@ -31,27 +28,27 @@ namespace RespoBot.Services.PeriodicServices
 
         public RateLimitService(IConfiguration configuration, ILogger<EntryPoint> logger, iRApi.IDataClient iRacingDataClient)
         {
-            Configuration = configuration;
-            Logger = logger;
+            _configuration = configuration;
+            _logger = logger;
 
             _serviceName = nameof(RateLimitService);
 
-            IRacingDataClient = iRacingDataClient;
+            _racingDataClient = iRacingDataClient;
         }
 
         public async Task UpdateRateLimits()
         {
-            await IRacingDataClient.GetMyInfoAsync();
-            iRApi.Common.DataResponse<iRApi.Lookups.LookupGroup[]> response = await IRacingDataClient.GetLookupsAsync();
+            await _racingDataClient.GetMyInfoAsync();
+            iRApi.Common.DataResponse<iRApi.Lookups.LookupGroup[]> response = await _racingDataClient.GetLookupsAsync();
 
-            _rateLimitReset = (DateTimeOffset)response.RateLimitReset;
-            _totalRateLimit = (int)response.TotalRateLimit;
-            _rateLimitRemaining = (int)response.RateLimitRemaining;
+            if (response.RateLimitReset != null) _rateLimitReset = (DateTimeOffset)response.RateLimitReset;
+            if (response.TotalRateLimit != null) _totalRateLimit = (int)response.TotalRateLimit;
+            if (response.RateLimitRemaining != null) _rateLimitRemaining = (int)response.RateLimitRemaining;
         }
 
         public async Task InitializeAsync(bool runImmediate = true)
         {
-            Logger.LogInformation($"Initializing {_serviceName}");
+            _logger.LogInformation($"Initializing {_serviceName}");
 
             CancellationTokenSource tokenSource = new();
 
@@ -60,9 +57,10 @@ namespace RespoBot.Services.PeriodicServices
                 await UpdateRateLimits();
 
             // continue running
-            _ = RunPeriodically(UpdateRateLimits, DateTime.UtcNow + TimeSpan.FromMinutes(Configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), TimeSpan.FromMinutes(Configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
+            _ = RunPeriodically(UpdateRateLimits, DateTime.UtcNow + TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
         }
 
+        [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         private async Task RunPeriodically(Func<Task> action, DateTime startTime, TimeSpan interval, CancellationToken token)
         {
             _nextRunTime = startTime;
@@ -83,8 +81,8 @@ namespace RespoBot.Services.PeriodicServices
 
         private int GetPerRequestDelay()
         {
-            double rateLimitThreshold = Configuration.GetValue<double>($"RespoBot:RateLimit:Threshold");
-            int minimumDelay = Configuration.GetValue<int>($"RespoBot:RateLimit:MinimumDelayMilliseconds");
+            double rateLimitThreshold = _configuration.GetValue<double>($"RespoBot:RateLimit:Threshold");
+            int minimumDelay = _configuration.GetValue<int>($"RespoBot:RateLimit:MinimumDelayMilliseconds");
 
             int delay = minimumDelay;
 
@@ -97,7 +95,7 @@ namespace RespoBot.Services.PeriodicServices
         public async Task AddRequest<TData>(Task<TData> request, Guid requestGroup, int expectedRequests){
             _pendingRequests.Add(request, requestGroup);
 
-            if(!_pendingRequests.Where(x => x.Value.Equals(requestGroup)).Any())
+            if(!_pendingRequests.Any(x => x.Value.Equals(requestGroup)))
                 _expectedRequests += expectedRequests;
 
             await Task.Delay(GetPerRequestDelay());

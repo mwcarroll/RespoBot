@@ -1,19 +1,12 @@
 using System;
-using System.Data;
 using System.IO;
-using System.Net;
-using AutoMapper;
 using Aydsko.iRacingData;
-using Dapper;
 using Dapper.Extensions.Caching.Memory;
 using Discord.Interactions;
 using Discord.WebSocket;
 using MicroOrm.Dapper.Repositories.Config;
 using MicroOrm.Dapper.Repositories.SqlGenerator;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using RespoBot.Data.DbContexts;
 using RespoBot.Services;
 using RespoBot.Services.PeriodicServices;
 

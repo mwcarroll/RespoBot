@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,10 +8,10 @@ namespace RespoBot.Services
 {
     public class PeriodicDiscordService
     {
-        private readonly IConfiguration Configuration;
-        private readonly ILogger<EntryPoint> Logger;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EntryPoint> _logger;
 
-        private readonly DiscordSocketClient DiscordClient;
+        private readonly DiscordSocketClient _discordClient;
 
         private readonly string _serviceName;
 
@@ -22,10 +20,10 @@ namespace RespoBot.Services
 
         public PeriodicDiscordService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
         {
-            Configuration = configuration;
-            Logger = logger;
+            _configuration = configuration;
+            _logger = logger;
 
-            DiscordClient = discordClient;
+            _discordClient = discordClient;
 
             _serviceName = serviceName;
         }
@@ -37,16 +35,16 @@ namespace RespoBot.Services
 
         public void Initialize()
         {
-            Logger.LogInformation($"Initializing {_serviceName}");
+            _logger.LogInformation($"Initializing {_serviceName}");
 
-            DiscordClient.Ready += Client_Ready;
+            _discordClient.Ready += Client_Ready;
         }
 
         private Task Client_Ready()
         {
             CancellationTokenSource tokenSource = new();
 
-            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(Configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
+            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
 
             return Task.CompletedTask;
         }

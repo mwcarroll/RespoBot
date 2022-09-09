@@ -11,7 +11,7 @@ namespace RespoBot.Data.Classes
         [Key]
         [Identity]
         public int Id { get; set; }
-        public int iRacingMemberId { get; set; }
+        public int IRacingMemberId { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public int LicenseLevel { get; set; }
@@ -20,8 +20,8 @@ namespace RespoBot.Data.Classes
         public string GroupName { get; set; }
         public int GroupId { get; set; }
         public float CornersPerIncident { get; set; }
-        public int IRating { get; set; }
-        public int TTRating { get; set; }
+        public int Rating { get; set; }
+        public int TtRating { get; set; }
         public int MprNumberOfRaces { get; set; }
         public int MprNumberOfTimeTrials { get; set; }
 
@@ -31,7 +31,7 @@ namespace RespoBot.Data.Classes
 
             return
                 object.Equals(this.Id, other.Id) &&
-                object.Equals(this.iRacingMemberId, other.iRacingMemberId) &&
+                object.Equals(this.IRacingMemberId, other.IRacingMemberId) &&
                 object.Equals(this.CategoryId, other.CategoryId) &&
                 object.Equals(this.Category, other.Category) &&
                 object.Equals(this.LicenseLevel, other.LicenseLevel) &&
@@ -40,8 +40,8 @@ namespace RespoBot.Data.Classes
                 object.Equals(this.GroupName, other.GroupName) &&
                 object.Equals(this.GroupId, other.GroupId) &&
                 object.Equals(this.CornersPerIncident, other.CornersPerIncident) &&
-                object.Equals(this.IRating, other.IRating) &&
-                object.Equals(this.TTRating, other.TTRating) &&
+                object.Equals(this.Rating, other.Rating) &&
+                object.Equals(this.TtRating, other.TtRating) &&
                 object.Equals(this.MprNumberOfRaces, other.MprNumberOfRaces) &&
                 object.Equals(this.MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
         }
@@ -63,7 +63,7 @@ namespace RespoBot.Data.Classes
         {
             return (
                     this.Id,
-                    this.iRacingMemberId,
+                    iRacingMemberId: this.IRacingMemberId,
                     this.CategoryId,
                     this.Category,
                     this.LicenseLevel,
@@ -72,8 +72,8 @@ namespace RespoBot.Data.Classes
                     this.GroupName,
                     this.GroupId,
                     this.CornersPerIncident,
-                    this.IRating,
-                    this.TTRating,
+                    IRating: this.Rating,
+                    TTRating: this.TtRating,
                     this.MprNumberOfRaces,
                     this.MprNumberOfTimeTrials
                 ).GetHashCode();

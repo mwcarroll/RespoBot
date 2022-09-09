@@ -2,8 +2,6 @@ using System;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Threading;
 using RespoBot.Services;
@@ -14,27 +12,27 @@ namespace RespoBot
 {
     public class EntryPoint
     {
-        private readonly IServiceProvider ServiceProvider;
-        private readonly IConfiguration Configuration;
-        private readonly ILogger<EntryPoint> Logger;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EntryPoint> _logger;
 
-        private readonly DiscordSocketClient Client;
-        private readonly InteractionService Commands;
+        private readonly DiscordSocketClient _client;
+        private readonly InteractionService _commands;
 
         public EntryPoint(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient client, InteractionService commands)
         {
-            ServiceProvider = serviceProvider;
-            Configuration = configuration;
-            Logger = logger;
+            _serviceProvider = serviceProvider;
+            _configuration = configuration;
+            _logger = logger;
 
-            Client = client;
-            Commands = commands;
+            _client = client;
+            _commands = commands;
         }
 
         public async Task Run(String[] args)
         {
-            await ServiceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
-            ServiceProvider.GetRequiredService<DataHelperService>().Run();
+            await _serviceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
+            _serviceProvider.GetRequiredService<DataHelperService>().Run();
 
             //Client.Ready += Client_Ready;
             //Client.Log += Log;
@@ -52,7 +50,7 @@ namespace RespoBot
 
         private Task Client_Ready()
         {
-            Logger.LogInformation($"Connected as -> [{Client.CurrentUser}]");
+            _logger.LogInformation($"Connected as -> [{_client.CurrentUser}]");
 
             return Task.CompletedTask;
         }
@@ -62,22 +60,22 @@ namespace RespoBot
             switch (arg.Severity)
             {
                 case LogSeverity.Critical:
-                    Logger.LogCritical(message: arg.Message);
+                    _logger.LogCritical(message: arg.Message);
                     break;
                 case LogSeverity.Error:
-                    Logger.LogError(message: arg.Exception.Message);
+                    _logger.LogError(message: arg.Exception.Message);
                     break;
                 case LogSeverity.Warning:
-                    Logger.LogWarning(message: arg.Message);
+                    _logger.LogWarning(message: arg.Message);
                     break;
                 case LogSeverity.Info:
-                    Logger.LogInformation(message: arg.Message);
+                    _logger.LogInformation(message: arg.Message);
                     break;
                 case LogSeverity.Verbose:
-                    Logger.LogTrace(message: arg.Message);
+                    _logger.LogTrace(message: arg.Message);
                     break;
                 case LogSeverity.Debug:
-                    Logger.LogDebug(message: arg.Message);
+                    _logger.LogDebug(message: arg.Message);
                     break;
             }
 

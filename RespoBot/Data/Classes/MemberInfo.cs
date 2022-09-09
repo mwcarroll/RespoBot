@@ -11,7 +11,7 @@ namespace RespoBot.Data.Classes
     {
         [Key]
         [Column("iRacingMemberId")]
-        public int iRacingMemberId { get; set; }
+        public int IRacingMemberId { get; set; }
         public string DisplayName { get; set; }
         public DateTime MemberSince { get; set; }
         [LeftJoin(tableName: "licenseInfos", key: "iRacingMemberId", externalKey: "iRacingMemberId")]

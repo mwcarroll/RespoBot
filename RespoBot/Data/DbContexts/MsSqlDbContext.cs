@@ -2,8 +2,6 @@
 using MicroOrm.Dapper.Repositories.DbContext;
 using System.Data.SqlClient;
 
-using DataContext = RespoBot.Data.Classes;
-
 namespace RespoBot.Data.DbContexts
 {
     public class MsSqlDbContext : DapperDbContext, IDbContext
