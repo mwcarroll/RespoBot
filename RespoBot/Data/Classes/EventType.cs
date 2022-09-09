@@ -17,8 +17,29 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                this.Label.Equals(other.Label) &&
-                this.Value.Equals(other.Value);
+                object.Equals(this.Label, other.Label) &&
+                object.Equals(this.Value, other.Value);
+        }
+
+        public override bool Equals(object obj) => Equals(obj as EventType);
+
+        public static bool operator ==(EventType left, EventType right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EventType left, EventType right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (
+                    this.Label,
+                    this.Value
+                ).GetHashCode();
         }
     }
 }

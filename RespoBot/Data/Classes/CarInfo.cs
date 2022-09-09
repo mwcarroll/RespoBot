@@ -48,38 +48,88 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                this.AiEnabled.Equals(other.AiEnabled) &&
-                this.AllowNumberColors.Equals(other.AllowNumberColors) &&
-                this.AllowNumberFont.Equals(other.AllowNumberFont) &&
-                this.AllowSponsor1.Equals(other.AllowSponsor1) &&
-                this.AllowSponsor2.Equals(other.AllowSponsor2) &&
-                this.AllowWheelColor.Equals(other.AllowWheelColor) &&
-                this.AwardExempt.Equals(other.AwardExempt) &&
-                this.CarDirectoryPath.Equals(other.CarDirectoryPath) &&
-                this.CarId.Equals(other.CarId) &&
-                this.CarName.Equals(other.CarName) &&
-                this.CarNameAbbreviated.Equals(other.CarNameAbbreviated) &&
-                this.CarTypes.Equals(other.CarTypes) &&
-                this.CarWeight.Equals(other.CarWeight) &&
-                this.Categories.Equals(other.Categories) &&
-                this.Created.Equals(other.Created) &&
-                this.FreeWithSubscription.Equals(other.FreeWithSubscription) &&
-                this.HasHeadlights.Equals(other.HasHeadlights) &&
-                this.HasMultipleDryTireTypes.Equals(other.HasMultipleDryTireTypes) &&
-                this.Hp.Equals(other.Hp) &&
-                this.MaxPowerAdjustPct.Equals(other.MaxPowerAdjustPct) &&
-                this.MaxWeightPenaltyKg.Equals(other.MaxWeightPenaltyKg) &&
-                this.MinPowerAdjustPct.Equals(other.MinPowerAdjustPct) &&
-                this.PackageId.Equals(other.PackageId) &&
-                this.Patterns.Equals(other.Patterns) &&
-                this.Price.Equals(other.Price) &&
-                this.Retired.Equals(other.Price) &&
-                this.SearchFilters.Equals(other.SearchFilters) &&
-                this.Sku.Equals(other.Sku) &&
-                this.PaintRules_RestrictCustomPaint.Equals(other.PaintRules_RestrictCustomPaint) &&
-                this.CarMake.Equals(other.CarMake) &&
-                this.CarModel.Equals(other.CarModel) &&
-                this.SiteUrl.Equals(other.SiteUrl);
+                object.Equals(this.AiEnabled, other.AiEnabled) &&
+                object.Equals(this.AllowNumberColors, other.AllowNumberColors) &&
+                object.Equals(this.AllowNumberFont, other.AllowNumberFont) &&
+                object.Equals(this.AllowSponsor1, other.AllowSponsor1) &&
+                object.Equals(this.AllowSponsor2, other.AllowSponsor2) &&
+                object.Equals(this.AllowWheelColor, other.AllowWheelColor) &&
+                object.Equals(this.AwardExempt, other.AwardExempt) &&
+                object.Equals(this.CarDirectoryPath, other.CarDirectoryPath) &&
+                object.Equals(this.CarId, other.CarId) &&
+                object.Equals(this.CarName, other.CarName) &&
+                object.Equals(this.CarNameAbbreviated, other.CarNameAbbreviated) &&
+                object.Equals(this.CarTypes, other.CarTypes) &&
+                object.Equals(this.CarWeight, other.CarWeight) &&
+                object.Equals(this.Categories, other.Categories) &&
+                object.Equals(this.Created, other.Created) &&
+                object.Equals(this.FreeWithSubscription, other.FreeWithSubscription) &&
+                object.Equals(this.HasHeadlights, other.HasHeadlights) &&
+                object.Equals(this.HasMultipleDryTireTypes, other.HasMultipleDryTireTypes) &&
+                object.Equals(this.Hp, other.Hp) &&
+                object.Equals(this.MaxPowerAdjustPct, other.MaxPowerAdjustPct) &&
+                object.Equals(this.MaxWeightPenaltyKg, other.MinPowerAdjustPct) &&
+                object.Equals(this.PackageId, other.PackageId) &&
+                object.Equals(this.Patterns, other.Patterns) &&
+                object.Equals(this.Price, other.Price) &&
+                object.Equals(this.Retired, other.Retired) &&
+                object.Equals(this.SearchFilters, other.SearchFilters) &&
+                object.Equals(this.Sku, other.Sku) &&
+                object.Equals(this.PaintRules_RestrictCustomPaint, other.PaintRules_RestrictCustomPaint) &&
+                object.Equals(this.CarMake, other.CarMake) &&
+                object.Equals(this.CarModel, other.CarModel) &&
+                object.Equals(this.SiteUrl, other.SiteUrl);
+        }
+
+        public override bool Equals(object obj) => Equals(obj as CarInfo);
+
+        public static bool operator==(CarInfo left, CarInfo right)
+        {
+            if(left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator!=(CarInfo left, CarInfo right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (
+                    this.AiEnabled,
+                    this.AllowNumberColors,
+                    this.AllowNumberFont,
+                    this.AllowSponsor1,
+                    this.AllowSponsor2,
+                    this.AllowWheelColor,
+                    this.AwardExempt,
+                    this.CarDirectoryPath,
+                    this.CarId,
+                    this.CarName,
+                    this.CarNameAbbreviated,
+                    this.CarTypes,
+                    this.CarWeight,
+                    this.Categories,
+                    this.Created,
+                    this.FreeWithSubscription,
+                    this.HasHeadlights,
+                    this.HasMultipleDryTireTypes,
+                    this.Hp,
+                    this.MaxPowerAdjustPct,
+                    this.MaxWeightPenaltyKg,
+                    this.MinPowerAdjustPct,
+                    this.PackageId,
+                    this.Patterns,
+                    this.Price,
+                    this.Retired,
+                    this.SearchFilters,
+                    this.Sku,
+                    this.PaintRules_RestrictCustomPaint,
+                    this.CarMake,
+                    this.CarModel,
+                    this.SiteUrl
+                ).GetHashCode();
         }
     }
 

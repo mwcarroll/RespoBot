@@ -30,20 +30,53 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                this.Id.Equals(other.Id) &&
-                this.iRacingMemberId.Equals(other.iRacingMemberId) &&
-                this.CategoryId.Equals(other.CategoryId) &&
-                this.Category.Equals(other.Category) &&
-                this.LicenseLevel.Equals(other.LicenseLevel) &&
-                this.SafetyRating.Equals(other.SafetyRating) &&
-                this.Color.Equals(other.Color) &&
-                this.GroupName.Equals(other.GroupName) &&
-                this.GroupId.Equals(other.GroupId) &&
-                this.CornersPerIncident.Equals(other.CornersPerIncident) &&
-                this.IRating.Equals(other.IRating) &&
-                this.TTRating.Equals(other.TTRating) &&
-                this.MprNumberOfRaces.Equals(other.MprNumberOfRaces) &&
-                this.MprNumberOfTimeTrials.Equals(other.MprNumberOfTimeTrials);
+                object.Equals(this.Id, other.Id) &&
+                object.Equals(this.iRacingMemberId, other.iRacingMemberId) &&
+                object.Equals(this.CategoryId, other.CategoryId) &&
+                object.Equals(this.Category, other.Category) &&
+                object.Equals(this.LicenseLevel, other.LicenseLevel) &&
+                object.Equals(this.SafetyRating, other.SafetyRating) &&
+                object.Equals(this.Color, other.Color) &&
+                object.Equals(this.GroupName, other.GroupName) &&
+                object.Equals(this.GroupId, other.GroupId) &&
+                object.Equals(this.CornersPerIncident, other.CornersPerIncident) &&
+                object.Equals(this.IRating, other.IRating) &&
+                object.Equals(this.TTRating, other.TTRating) &&
+                object.Equals(this.MprNumberOfRaces, other.MprNumberOfRaces) &&
+                object.Equals(this.MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
+        }
+
+        public override bool Equals(object obj) => Equals(obj as LicenseInfo);
+
+        public static bool operator ==(LicenseInfo left, LicenseInfo right)
+        {
+            if (left is null) return right is null;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LicenseInfo left, LicenseInfo right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (
+                    this.Id,
+                    this.iRacingMemberId,
+                    this.CategoryId,
+                    this.Category,
+                    this.LicenseLevel,
+                    this.SafetyRating,
+                    this.Color,
+                    this.GroupName,
+                    this.GroupId,
+                    this.CornersPerIncident,
+                    this.IRating,
+                    this.TTRating,
+                    this.MprNumberOfRaces,
+                    this.MprNumberOfTimeTrials
+                ).GetHashCode();
         }
     }
 }
