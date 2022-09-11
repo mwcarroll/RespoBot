@@ -1,4 +1,8 @@
+using System;
+using System.Data;
+using System.IO;
 using Aydsko.iRacingData;
+using Dapper;
 using Dapper.Extensions.Caching.Memory;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -7,8 +11,6 @@ using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
 using RespoBot.Services.PeriodicServices;
-using System;
-using System.IO;
 
 namespace RespoBot
 {
@@ -37,7 +39,7 @@ namespace RespoBot
             MicroOrmConfig.UseQuotationMarks = true;
 
             services.AddSingleton(typeof(ISqlGenerator<>), typeof(SqlGenerator<>));
-            services.AddSingleton<IDbContext>(x => new MsSqlDbContext(configuration.GetConnectionString("Default")));
+            services.AddSingleton<IDbContext>(_ => new MsSqlDbContext(configuration.GetConnectionString("Default")));
 
             services.AddDapperCachingInMemory(new MemoryConfiguration
             {

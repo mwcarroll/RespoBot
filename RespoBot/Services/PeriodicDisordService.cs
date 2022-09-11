@@ -1,7 +1,8 @@
-﻿using Discord.WebSocket;
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord.WebSocket;
 
 namespace RespoBot.Services
 {
@@ -17,7 +18,7 @@ namespace RespoBot.Services
         private DateTime _nextRunTime;
 
 
-        public PeriodicDiscordService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
+        protected PeriodicDiscordService(IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, string serviceName)
         {
             _configuration = configuration;
             _logger = logger;
@@ -27,12 +28,12 @@ namespace RespoBot.Services
             _serviceName = serviceName;
         }
 
-        public virtual void Run()
+        protected virtual void Run()
         {
 
         }
 
-        public void Initialize()
+        internal void Initialize()
         {
             _logger.LogInformation($"Initializing {_serviceName}");
 
@@ -48,6 +49,7 @@ namespace RespoBot.Services
             return Task.CompletedTask;
         }
 
+        [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         private async Task RunPeriodically(Action action, DateTime startTime, TimeSpan interval, CancellationToken token)
         {
             _nextRunTime = startTime;

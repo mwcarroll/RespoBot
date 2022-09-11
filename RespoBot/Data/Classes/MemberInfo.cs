@@ -1,8 +1,9 @@
-﻿using MicroOrm.Dapper.Repositories.Attributes.Joins;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using MicroOrm.Dapper.Repositories.Attributes.Joins;
 
 namespace RespoBot.Data.Classes
 {
@@ -11,6 +12,7 @@ namespace RespoBot.Data.Classes
     {
         [Key]
         [Column("iRacingMemberId")]
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public int IRacingMemberId { get; set; }
         public string DisplayName { get; set; }
         public DateTime MemberSince { get; set; }

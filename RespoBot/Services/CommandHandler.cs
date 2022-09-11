@@ -1,9 +1,9 @@
-﻿using Discord;
-using Discord.Interactions;
-using Discord.WebSocket;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Interactions;
+using Discord.WebSocket;
 
 namespace RespoBot.Services
 {
@@ -28,7 +28,7 @@ namespace RespoBot.Services
 
         public async Task InitializeAsync()
         {
-            _logger.LogInformation($"Initializing CommandHandler");
+            _logger.LogInformation("Initializing CommandHandler");
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
 
@@ -43,10 +43,10 @@ namespace RespoBot.Services
         {
             if (Program.IsDebug())
             {
-                await _commands.RegisterCommandsToGuildAsync(_configuration.GetValue<ulong>("RespoBot:TestGuildId"), true);
+                await _commands.RegisterCommandsToGuildAsync(_configuration.GetValue<ulong>("RespoBot:TestGuildId"));
             }                
             else
-                await _commands.RegisterCommandsGloballyAsync(true);
+                await _commands.RegisterCommandsGloballyAsync();
         }
 
         private async Task HandleInteraction(SocketInteraction arg)
@@ -61,7 +61,7 @@ namespace RespoBot.Services
                 Console.WriteLine(ex);
                 if (arg.Type == InteractionType.ApplicationCommand)
                 {
-                    await arg.GetOriginalResponseAsync().ContinueWith(async (msg) => await msg.Result.DeleteAsync());
+                    await arg.GetOriginalResponseAsync().ContinueWith(async msg => await msg.Result.DeleteAsync());
                 }
             }
         }
@@ -86,8 +86,6 @@ namespace RespoBot.Services
                         break;
                     case InteractionCommandError.Unsuccessful:
                         _logger.LogError(message: arg3.ErrorReason, arg3);
-                        break;
-                    default:
                         break;
                 }
             }

@@ -36,6 +36,7 @@ namespace RespoBot.Data.Classes
         public bool Retired { get; set; }
         public string SearchFilters { get; set; }
         public int Sku { get; set; }
+        [Column("PaintRules_RestrictCustomPaint")]
         public bool PaintRulesRestrictCustomPaint { get; set; }
         public string CarMake { get; set; }
         public string CarModel { get; set; }
@@ -46,37 +47,37 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                object.Equals(this.AiEnabled, other.AiEnabled) &&
-                object.Equals(this.AllowNumberColors, other.AllowNumberColors) &&
-                object.Equals(this.AllowNumberFont, other.AllowNumberFont) &&
-                object.Equals(this.AllowSponsor1, other.AllowSponsor1) &&
-                object.Equals(this.AllowSponsor2, other.AllowSponsor2) &&
-                object.Equals(this.AllowWheelColor, other.AllowWheelColor) &&
-                object.Equals(this.AwardExempt, other.AwardExempt) &&
-                object.Equals(this.CarDirectoryPath, other.CarDirectoryPath) &&
-                object.Equals(this.CarId, other.CarId) &&
-                object.Equals(this.CarName, other.CarName) &&
-                object.Equals(this.CarNameAbbreviated, other.CarNameAbbreviated) &&
-                object.Equals(this.CarTypes, other.CarTypes) &&
-                object.Equals(this.CarWeight, other.CarWeight) &&
-                object.Equals(this.Categories, other.Categories) &&
-                object.Equals(this.Created, other.Created) &&
-                object.Equals(this.FreeWithSubscription, other.FreeWithSubscription) &&
-                object.Equals(this.HasHeadlights, other.HasHeadlights) &&
-                object.Equals(this.HasMultipleDryTireTypes, other.HasMultipleDryTireTypes) &&
-                object.Equals(this.Hp, other.Hp) &&
-                object.Equals(this.MaxPowerAdjustPct, other.MaxPowerAdjustPct) &&
-                object.Equals(this.MaxWeightPenaltyKg, other.MinPowerAdjustPct) &&
-                object.Equals(this.PackageId, other.PackageId) &&
-                object.Equals(this.Patterns, other.Patterns) &&
-                object.Equals(this.Price, other.Price) &&
-                object.Equals(this.Retired, other.Retired) &&
-                object.Equals(this.SearchFilters, other.SearchFilters) &&
-                object.Equals(this.Sku, other.Sku) &&
-                object.Equals(this.PaintRulesRestrictCustomPaint, other.PaintRulesRestrictCustomPaint) &&
-                object.Equals(this.CarMake, other.CarMake) &&
-                object.Equals(this.CarModel, other.CarModel) &&
-                object.Equals(this.SiteUrl, other.SiteUrl);
+                Equals(AiEnabled, other.AiEnabled) &&
+                Equals(AllowNumberColors, other.AllowNumberColors) &&
+                Equals(AllowNumberFont, other.AllowNumberFont) &&
+                Equals(AllowSponsor1, other.AllowSponsor1) &&
+                Equals(AllowSponsor2, other.AllowSponsor2) &&
+                Equals(AllowWheelColor, other.AllowWheelColor) &&
+                Equals(AwardExempt, other.AwardExempt) &&
+                Equals(CarDirectoryPath, other.CarDirectoryPath) &&
+                Equals(CarId, other.CarId) &&
+                Equals(CarName, other.CarName) &&
+                Equals(CarNameAbbreviated, other.CarNameAbbreviated) &&
+                Equals(CarTypes, other.CarTypes) &&
+                Equals(CarWeight, other.CarWeight) &&
+                Equals(Categories, other.Categories) &&
+                Equals(Created, other.Created) &&
+                Equals(FreeWithSubscription, other.FreeWithSubscription) &&
+                Equals(HasHeadlights, other.HasHeadlights) &&
+                Equals(HasMultipleDryTireTypes, other.HasMultipleDryTireTypes) &&
+                Equals(Hp, other.Hp) &&
+                Equals(MaxPowerAdjustPct, other.MaxPowerAdjustPct) &&
+                Equals(MaxWeightPenaltyKg, other.MinPowerAdjustPct) &&
+                Equals(PackageId, other.PackageId) &&
+                Equals(Patterns, other.Patterns) &&
+                Equals(Price, other.Price) &&
+                Equals(Retired, other.Retired) &&
+                Equals(SearchFilters, other.SearchFilters) &&
+                Equals(Sku, other.Sku) &&
+                Equals(PaintRulesRestrictCustomPaint, other.PaintRulesRestrictCustomPaint) &&
+                Equals(CarMake, other.CarMake) &&
+                Equals(CarModel, other.CarModel) &&
+                Equals(SiteUrl, other.SiteUrl);
         }
 
         public override bool Equals(object obj) => Equals(obj as CarInfo);
@@ -95,38 +96,38 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    this.AiEnabled,
-                    this.AllowNumberColors,
-                    this.AllowNumberFont,
-                    this.AllowSponsor1,
-                    this.AllowSponsor2,
-                    this.AllowWheelColor,
-                    this.AwardExempt,
-                    this.CarDirectoryPath,
-                    this.CarId,
-                    this.CarName,
-                    this.CarNameAbbreviated,
-                    this.CarTypes,
-                    this.CarWeight,
-                    this.Categories,
-                    this.Created,
-                    this.FreeWithSubscription,
-                    this.HasHeadlights,
-                    this.HasMultipleDryTireTypes,
-                    this.Hp,
-                    this.MaxPowerAdjustPct,
-                    this.MaxWeightPenaltyKg,
-                    this.MinPowerAdjustPct,
-                    this.PackageId,
-                    this.Patterns,
-                    this.Price,
-                    this.Retired,
-                    this.SearchFilters,
-                    this.Sku,
-                    PaintRules_RestrictCustomPaint: this.PaintRulesRestrictCustomPaint,
-                    this.CarMake,
-                    this.CarModel,
-                    this.SiteUrl
+                    AiEnabled,
+                    AllowNumberColors,
+                    AllowNumberFont,
+                    AllowSponsor1,
+                    AllowSponsor2,
+                    AllowWheelColor,
+                    AwardExempt,
+                    CarDirectoryPath,
+                    CarId,
+                    CarName,
+                    CarNameAbbreviated,
+                    CarTypes,
+                    CarWeight,
+                    Categories,
+                    Created,
+                    FreeWithSubscription,
+                    HasHeadlights,
+                    HasMultipleDryTireTypes,
+                    Hp,
+                    MaxPowerAdjustPct,
+                    MaxWeightPenaltyKg,
+                    MinPowerAdjustPct,
+                    PackageId,
+                    Patterns,
+                    Price,
+                    Retired,
+                    SearchFilters,
+                    Sku,
+                    PaintRulesRestrictCustomPaint,
+                    CarMake,
+                    CarModel,
+                    SiteUrl
                 ).GetHashCode();
         }
     }

@@ -7,10 +7,12 @@ namespace RespoBot.Data.DbContexts
     {
         IDapperRepository<DataContext.CarInfo> CarInfos { get; }
         IDapperRepository<DataContext.EventType> EventTypes { get; }
+        IDapperRepository<DataContext.Events.Hosted.CarInfo> HostedEventCarInfos { get; }
+        IDapperRepository<DataContext.Events.HostedEvent> HostedEvents { get; }
         IDapperRepository<DataContext.LicenseInfo> LicenseInfos { get; }
         IDapperRepository<DataContext.Member> Members { get; }
         IDapperRepository<DataContext.MemberInfo> MemberInfos { get; }
-        IDapperRepository<DataContext.Events.PublicEvents> PublicEvents { get; }
+        IDapperRepository<DataContext.Events.PublicEvent> PublicEvents { get; }
         IDapperRepository<DataContext.Track> Tracks { get; }
     }
 }

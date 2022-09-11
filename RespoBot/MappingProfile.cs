@@ -14,11 +14,20 @@ namespace RespoBot
 
             CreateMap<iRApi.Constants.EventType, DataContext.EventType>();
 
+            CreateMap<iRApi.Results.ResultTrackInfo, DataContext.Events.TrackInfo>();
+
+            CreateMap<iRApi.Searches.HostedResultItem, DataContext.Events.HostedEvent>()
+                .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Track.TrackId))
+                .ForMember(dest => dest.HostCustomerId, opt => opt.MapFrom(src => src.Host.CustomerId))
+                .ForMember(dest => dest.HostDisplayName, opt => opt.MapFrom(src => src.Host.DisplayName));
+
+            CreateMap<iRApi.Searches.CarInfo, DataContext.Events.Hosted.CarInfo>();
+
             CreateMap<iRApi.Member.LicenseInfo, DataContext.LicenseInfo>()
                 .ForMember(dest => dest.CornersPerIncident, opt => opt.MapFrom(src => Math.Round(src.CornersPerIncident, 2)))
                 .ForMember(dest => dest.SafetyRating, opt => opt.MapFrom(src => Math.Round(src.SafetyRating, 2)));
 
-            CreateMap<iRApi.Searches.OfficialSearchResultItem, DataContext.Events.PublicEvents>()
+            CreateMap<iRApi.Searches.OfficialSearchResultItem, DataContext.Events.PublicEvent>()
                 .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Track.TrackId))
                 .ForMember(dest => dest.EventAverageLap, opt => opt.MapFrom(src => src.EventAverageLap != null ? src.EventAverageLap.Value.Ticks : 0))
                 .ForMember(dest => dest.EventBestLapTime, opt => opt.MapFrom(src => src.EventBestLapTime != null ? src.EventBestLapTime.Value.Ticks : 0));

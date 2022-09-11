@@ -17,8 +17,8 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                object.Equals(this.Label, other.Label) &&
-                object.Equals(this.Value, other.Value);
+                Equals(Label, other.Label) &&
+                Equals(Value, other.Value);
         }
 
         public override bool Equals(object obj) => Equals(obj as EventType);
@@ -37,8 +37,8 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    this.Label,
-                    this.Value
+                    Label,
+                    Value
                 ).GetHashCode();
         }
     }

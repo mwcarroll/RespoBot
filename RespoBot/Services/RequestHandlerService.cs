@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Linq;
 using System.Threading.Tasks;
 using static RespoBot.Services.PeriodicServices.RateLimitService;
@@ -12,7 +13,10 @@ namespace RespoBot.Services
         private readonly ILogger<EntryPoint> _logger;
 
         private Dictionary<Task, Guid> _pendingRequests = new();
-        private int _expectedRequests = 0;
+        private Dictionary<Guid, DateTimeOffset> _taskGroupStartedAt = new();
+        private int _expectedRequests;
+
+        object _lock = new();
 
         public RequestHandlerService(IConfiguration configuration, ILogger<EntryPoint> logger)
         {
@@ -20,27 +24,38 @@ namespace RespoBot.Services
             _logger = logger;
         }
 
-        private int GetPerRequestDelay()
+        private int GetPerRequestDelay(Guid requestGroup)
         {
-            double rateLimitThreshold = _configuration.GetValue<double>($"RespoBot:RateLimit:Threshold");
-            int minimumDelay = _configuration.GetValue<int>($"RespoBot:RateLimit:MinimumDelayMilliseconds");
+            DateTimeOffset reset = RateLimitData.RateLimitReset;
+            _taskGroupStartedAt.TryGetValue(requestGroup, out DateTimeOffset now);
 
-            int delay = minimumDelay;
+            TimeSpan difference = reset - now;
 
-            if (_expectedRequests > ((int)(RateLimitData.RateLimitRemaining * rateLimitThreshold)))
-                delay = (int)((RateLimitData.RateLimitReset.ToUnixTimeMilliseconds() - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / (RateLimitData.TotalRateLimit * rateLimitThreshold));
+            double rateLimitThreshold = _configuration.GetValue<double>("RespoBot:RateLimit:Threshold");
+            int configuredMinimumDelay = _configuration.GetValue<int>("RespoBot:RateLimit:MinimumDelayMilliseconds");
 
-            return (delay > minimumDelay) ? delay : minimumDelay;
+            var delay = (_expectedRequests > (RateLimitData.RateLimitRemaining * rateLimitThreshold)) ? Math.Max(
+                    configuredMinimumDelay,
+                    (int)(difference.TotalMilliseconds / (RateLimitData.RateLimitRemaining * rateLimitThreshold))
+                ) : configuredMinimumDelay;
+
+            return delay;
         }
 
         public async Task AddRequest<TData>(Task<TData> request, Guid requestGroup, int expectedRequests)
         {
-            _pendingRequests.Add(request, requestGroup);
+            lock (_lock)
+            {
+                if (!_taskGroupStartedAt.ContainsKey(requestGroup))
+                {
+                    _expectedRequests += expectedRequests;
+                    _taskGroupStartedAt.Add(requestGroup, DateTimeOffset.UtcNow);
+                }
 
-            if (!_pendingRequests.Any(x => x.Value.Equals(requestGroup)))
-                _expectedRequests += expectedRequests;
+                _pendingRequests.Add(request, requestGroup);
+            }
 
-            await Task.Delay(GetPerRequestDelay());
+            await Task.Delay(GetPerRequestDelay(requestGroup));
         }
 
         public List<Task<TData>> GetResponses<TData>(Guid requestGroup)
@@ -49,7 +64,7 @@ namespace RespoBot.Services
 
             _pendingRequests = _pendingRequests.Where(x => !x.Value.Equals(requestGroup)).ToDictionary(x => x.Key, x => x.Value);
 
-            Task.WhenAll(responses);
+            Task.WhenAll(responses).ConfigureAwait(false);
 
             if (!_pendingRequests.Any())
                 _expectedRequests = 0;

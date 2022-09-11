@@ -1,12 +1,12 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
 using RespoBot.Services.PeriodicServices;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace RespoBot
 {

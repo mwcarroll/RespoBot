@@ -62,52 +62,52 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                object.Equals(this.Id, other.Id) &&
-                object.Equals(this.Name, other.Name) &&
-                object.Equals(this.AiEnabled, other.AiEnabled) &&
-                object.Equals(this.AwardExempt, other.AwardExempt) &&
-                object.Equals(this.Category, other.Category) &&
-                object.Equals(this.CategoryId, other.CategoryId) &&
-                object.Equals(this.Closes, other.Closes) &&
-                object.Equals(this.ConfigName, other.ConfigName) &&
-                object.Equals(this.CornersPerLap, other.CornersPerLap) &&
-                object.Equals(this.Created, other.Created) &&
-                object.Equals(this.FreeWithSubscription, other.FreeWithSubscription) &&
-                object.Equals(this.FullyLit, other.FullyLit) &&
-                object.Equals(this.GridStalls, other.GridStalls) &&
-                object.Equals(this.HasOptPath, other.HasOptPath) &&
-                object.Equals(this.HasShortParadeLap, other.HasShortParadeLap) &&
-                object.Equals(this.HasSvgMap, other.HasSvgMap) &&
-                object.Equals(this.IsDirt, other.IsDirt) &&
-                object.Equals(this.IsOval, other.IsOval) &&
-                object.Equals(this.LapScoring, other.LapScoring) &&
-                object.Equals(this.Latitude, other.Latitude) &&
-                object.Equals(this.Location, other.Location) &&
-                object.Equals(this.Longitude, other.Longitude) &&
-                object.Equals(this.MaxCars, other.MaxCars) &&
-                object.Equals(this.NightLighting, other.NightLighting) &&
-                object.Equals(this.NominalLapTime, other.NominalLapTime) &&
-                object.Equals(this.NumberPitstalls, other.NumberPitstalls) &&
-                object.Equals(this.Opens, other.Opens) &&
-                object.Equals(this.PackageId, other.PackageId) &&
-                object.Equals(this.PitRoadSpeedLimit, other.PitRoadSpeedLimit) &&
-                object.Equals(this.Price, other.Price) &&
-                object.Equals(this.Priority, other.Priority) &&
-                object.Equals(this.Purchasable, other.Purchasable) &&
-                object.Equals(this.QualifyLaps, other.QualifyLaps) &&
-                object.Equals(this.RestartOnLeft, other.RestartOnLeft) &&
-                object.Equals(this.Retired, other.Retired) &&
-                object.Equals(this.SearchFilters, other.SearchFilters) &&
-                object.Equals(this.SiteUrl, other.SiteUrl) &&
-                object.Equals(this.Sku, other.Sku) &&
-                object.Equals(this.SoloLaps, other.SoloLaps) &&
-                object.Equals(this.StartOnLeft, other.StartOnLeft) &&
-                object.Equals(this.SupportsGripCompound, other.SupportsGripCompound) &&
-                object.Equals(this.TechTrack, other.TechTrack) &&
-                object.Equals(this.TimeZone, other.TimeZone) &&
-                object.Equals(this.TrackConfigLength, other.TrackConfigLength) &&
-                object.Equals(this.TrackDirpath, other.TrackDirpath) &&
-                object.Equals(this.Banking, other.Banking);
+                Equals(Id, other.Id) &&
+                Equals(Name, other.Name) &&
+                Equals(AiEnabled, other.AiEnabled) &&
+                Equals(AwardExempt, other.AwardExempt) &&
+                Equals(Category, other.Category) &&
+                Equals(CategoryId, other.CategoryId) &&
+                Equals(Closes, other.Closes) &&
+                Equals(ConfigName, other.ConfigName) &&
+                Equals(CornersPerLap, other.CornersPerLap) &&
+                Equals(Created, other.Created) &&
+                Equals(FreeWithSubscription, other.FreeWithSubscription) &&
+                Equals(FullyLit, other.FullyLit) &&
+                Equals(GridStalls, other.GridStalls) &&
+                Equals(HasOptPath, other.HasOptPath) &&
+                Equals(HasShortParadeLap, other.HasShortParadeLap) &&
+                Equals(HasSvgMap, other.HasSvgMap) &&
+                Equals(IsDirt, other.IsDirt) &&
+                Equals(IsOval, other.IsOval) &&
+                Equals(LapScoring, other.LapScoring) &&
+                Equals(Latitude, other.Latitude) &&
+                Equals(Location, other.Location) &&
+                Equals(Longitude, other.Longitude) &&
+                Equals(MaxCars, other.MaxCars) &&
+                Equals(NightLighting, other.NightLighting) &&
+                Equals(NominalLapTime, other.NominalLapTime) &&
+                Equals(NumberPitstalls, other.NumberPitstalls) &&
+                Equals(Opens, other.Opens) &&
+                Equals(PackageId, other.PackageId) &&
+                Equals(PitRoadSpeedLimit, other.PitRoadSpeedLimit) &&
+                Equals(Price, other.Price) &&
+                Equals(Priority, other.Priority) &&
+                Equals(Purchasable, other.Purchasable) &&
+                Equals(QualifyLaps, other.QualifyLaps) &&
+                Equals(RestartOnLeft, other.RestartOnLeft) &&
+                Equals(Retired, other.Retired) &&
+                Equals(SearchFilters, other.SearchFilters) &&
+                Equals(SiteUrl, other.SiteUrl) &&
+                Equals(Sku, other.Sku) &&
+                Equals(SoloLaps, other.SoloLaps) &&
+                Equals(StartOnLeft, other.StartOnLeft) &&
+                Equals(SupportsGripCompound, other.SupportsGripCompound) &&
+                Equals(TechTrack, other.TechTrack) &&
+                Equals(TimeZone, other.TimeZone) &&
+                Equals(TrackConfigLength, other.TrackConfigLength) &&
+                Equals(TrackDirpath, other.TrackDirpath) &&
+                Equals(Banking, other.Banking);
         }
 
         public override bool Equals(object obj) => Equals(obj as Track);
@@ -126,52 +126,52 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    this.Id,
-                    this.Name,
-                    this.AiEnabled,
-                    this.AwardExempt,
-                    this.Category,
-                    this.CategoryId,
-                    this.Closes,
-                    this.ConfigName,
-                    this.CornersPerLap,
-                    this.Created,
-                    this.FreeWithSubscription,
-                    this.FullyLit,
-                    this.GridStalls,
-                    this.HasOptPath,
-                    this.HasShortParadeLap,
-                    this.HasSvgMap,
-                    this.IsDirt,
-                    this.IsOval,
-                    this.LapScoring,
-                    this.Latitude,
-                    this.Location,
-                    this.Longitude,
-                    this.MaxCars,
-                    this.NightLighting,
-                    this.NominalLapTime,
-                    this.NumberPitstalls,
-                    this.Opens,
-                    this.PackageId,
-                    this.PitRoadSpeedLimit,
-                    this.Price,
-                    this.Priority,
-                    this.Purchasable,
-                    this.QualifyLaps,
-                    this.RestartOnLeft,
-                    this.Retired,
-                    this.SearchFilters,
-                    this.SiteUrl,
-                    this.Sku,
-                    this.SoloLaps,
-                    this.StartOnLeft,
-                    this.SupportsGripCompound,
-                    this.TechTrack,
-                    this.TimeZone,
-                    this.TrackConfigLength,
-                    this.TrackDirpath,
-                    this.Banking
+                    Id,
+                    Name,
+                    AiEnabled,
+                    AwardExempt,
+                    Category,
+                    CategoryId,
+                    Closes,
+                    ConfigName,
+                    CornersPerLap,
+                    Created,
+                    FreeWithSubscription,
+                    FullyLit,
+                    GridStalls,
+                    HasOptPath,
+                    HasShortParadeLap,
+                    HasSvgMap,
+                    IsDirt,
+                    IsOval,
+                    LapScoring,
+                    Latitude,
+                    Location,
+                    Longitude,
+                    MaxCars,
+                    NightLighting,
+                    NominalLapTime,
+                    NumberPitstalls,
+                    Opens,
+                    PackageId,
+                    PitRoadSpeedLimit,
+                    Price,
+                    Priority,
+                    Purchasable,
+                    QualifyLaps,
+                    RestartOnLeft,
+                    Retired,
+                    SearchFilters,
+                    SiteUrl,
+                    Sku,
+                    SoloLaps,
+                    StartOnLeft,
+                    SupportsGripCompound,
+                    TechTrack,
+                    TimeZone,
+                    TrackConfigLength,
+                    TrackDirpath,
+                    Banking
                 ).GetHashCode();
         }
     }

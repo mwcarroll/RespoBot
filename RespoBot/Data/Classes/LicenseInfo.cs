@@ -1,7 +1,8 @@
-﻿using MicroOrm.Dapper.Repositories.Attributes;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
+using MicroOrm.Dapper.Repositories.Attributes;
 
 namespace RespoBot.Data.Classes
 {
@@ -11,6 +12,7 @@ namespace RespoBot.Data.Classes
         [Key]
         [Identity]
         public int Id { get; set; }
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public int IRacingMemberId { get; set; }
         public int CategoryId { get; set; }
         public string Category { get; set; }
@@ -30,20 +32,20 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                object.Equals(this.Id, other.Id) &&
-                object.Equals(this.IRacingMemberId, other.IRacingMemberId) &&
-                object.Equals(this.CategoryId, other.CategoryId) &&
-                object.Equals(this.Category, other.Category) &&
-                object.Equals(this.LicenseLevel, other.LicenseLevel) &&
-                object.Equals(this.SafetyRating, other.SafetyRating) &&
-                object.Equals(this.Color, other.Color) &&
-                object.Equals(this.GroupName, other.GroupName) &&
-                object.Equals(this.GroupId, other.GroupId) &&
-                object.Equals(this.CornersPerIncident, other.CornersPerIncident) &&
-                object.Equals(this.Rating, other.Rating) &&
-                object.Equals(this.TtRating, other.TtRating) &&
-                object.Equals(this.MprNumberOfRaces, other.MprNumberOfRaces) &&
-                object.Equals(this.MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
+                Equals(Id, other.Id) &&
+                Equals(IRacingMemberId, other.IRacingMemberId) &&
+                Equals(CategoryId, other.CategoryId) &&
+                Equals(Category, other.Category) &&
+                Equals(LicenseLevel, other.LicenseLevel) &&
+                Equals(SafetyRating, other.SafetyRating) &&
+                Equals(Color, other.Color) &&
+                Equals(GroupName, other.GroupName) &&
+                Equals(GroupId, other.GroupId) &&
+                Equals(CornersPerIncident, other.CornersPerIncident) &&
+                Equals(Rating, other.Rating) &&
+                Equals(TtRating, other.TtRating) &&
+                Equals(MprNumberOfRaces, other.MprNumberOfRaces) &&
+                Equals(MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
         }
 
         public override bool Equals(object obj) => Equals(obj as LicenseInfo);
@@ -62,20 +64,20 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    this.Id,
-                    iRacingMemberId: this.IRacingMemberId,
-                    this.CategoryId,
-                    this.Category,
-                    this.LicenseLevel,
-                    this.SafetyRating,
-                    this.Color,
-                    this.GroupName,
-                    this.GroupId,
-                    this.CornersPerIncident,
-                    IRating: this.Rating,
-                    TTRating: this.TtRating,
-                    this.MprNumberOfRaces,
-                    this.MprNumberOfTimeTrials
+                    Id,
+                    iRacingMemberId: IRacingMemberId,
+                    CategoryId,
+                    Category,
+                    LicenseLevel,
+                    SafetyRating,
+                    Color,
+                    GroupName,
+                    GroupId,
+                    CornersPerIncident,
+                    IRating: Rating,
+                    TTRating: TtRating,
+                    MprNumberOfRaces,
+                    MprNumberOfTimeTrials
                 ).GetHashCode();
         }
     }

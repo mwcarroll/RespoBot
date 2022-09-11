@@ -14,7 +14,7 @@ namespace RespoBot.Services.PeriodicServices
 
         private DateTime _nextRunTime;
 
-        private readonly iRApi.IDataClient _racingDataClient;
+        private readonly iRApi.IDataClient _iRacingDataClient;
 
         private static DateTimeOffset _rateLimitReset;
         private static int _totalRateLimit;
@@ -27,13 +27,13 @@ namespace RespoBot.Services.PeriodicServices
 
             _serviceName = nameof(RateLimitService);
 
-            _racingDataClient = iRacingDataClient;
+            _iRacingDataClient = iRacingDataClient;
         }
 
         private async Task UpdateRateLimits()
         {
-            await _racingDataClient.GetMyInfoAsync();
-            iRApi.Common.DataResponse<iRApi.Lookups.LookupGroup[]> response = await _racingDataClient.GetLookupsAsync();
+            await _iRacingDataClient.GetMyInfoAsync();
+            iRApi.Common.DataResponse<iRApi.Lookups.LookupGroup[]> response = await _iRacingDataClient.GetLookupsAsync();
 
             if (response.RateLimitReset != null) _rateLimitReset = (DateTimeOffset)response.RateLimitReset;
             if (response.TotalRateLimit != null) _totalRateLimit = (int)response.TotalRateLimit;
