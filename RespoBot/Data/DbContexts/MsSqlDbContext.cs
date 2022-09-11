@@ -13,7 +13,7 @@ namespace RespoBot.Data.DbContexts
         private IDapperRepository<DataContext.LicenseInfo> _licenseInfos;
         private IDapperRepository<DataContext.Member> _members;
         private IDapperRepository<DataContext.MemberInfo> _memberInfos;
-        private IDapperRepository<DataContext.Events.PublicEvent> _publicEvents;
+        private IDapperRepository<DataContext.Events.OfficialEvent> _officialEvents;
         private IDapperRepository<DataContext.Track> _tracks;
 
         public IDapperRepository<DataContext.CarInfo> CarInfos => _carInfos ??= new DapperRepository<DataContext.CarInfo>(Connection);
@@ -23,7 +23,7 @@ namespace RespoBot.Data.DbContexts
         public IDapperRepository<DataContext.LicenseInfo> LicenseInfos => _licenseInfos ??= new DapperRepository<DataContext.LicenseInfo>(Connection);
         public IDapperRepository<DataContext.Member> Members => _members ??= new DapperRepository<DataContext.Member>(Connection);
         public IDapperRepository<DataContext.MemberInfo> MemberInfos => _memberInfos ??= new DapperRepository<DataContext.MemberInfo>(Connection);
-        public IDapperRepository<DataContext.Events.PublicEvent> PublicEvents => _publicEvents ??= new DapperRepository<DataContext.Events.PublicEvent>(Connection);
+        public IDapperRepository<DataContext.Events.OfficialEvent> OfficialEvents => _officialEvents ??= new DapperRepository<DataContext.Events.OfficialEvent>(Connection);
         public IDapperRepository<DataContext.Track> Tracks => _tracks ??= new DapperRepository<DataContext.Track>(Connection);
 
         public MsSqlDbContext(string connectionString) : base(new SqlConnection(connectionString))

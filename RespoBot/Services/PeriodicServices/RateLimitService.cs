@@ -51,7 +51,7 @@ namespace RespoBot.Services.PeriodicServices
                 await UpdateRateLimits();
 
             // continue running
-            _ = RunPeriodically(UpdateRateLimits, DateTime.UtcNow + TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
+            _ = RunPeriodically(UpdateRateLimits, DateTime.UtcNow + TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:ServiceIntervals:{_serviceName}", 1)), TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:ServiceIntervals{_serviceName}", 1)), tokenSource.Token);
         }
 
         public RateLimitData GetLimitData()

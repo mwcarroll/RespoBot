@@ -27,7 +27,7 @@ namespace RespoBot
                 .ForMember(dest => dest.CornersPerIncident, opt => opt.MapFrom(src => Math.Round(src.CornersPerIncident, 2)))
                 .ForMember(dest => dest.SafetyRating, opt => opt.MapFrom(src => Math.Round(src.SafetyRating, 2)));
 
-            CreateMap<iRApi.Searches.OfficialSearchResultItem, DataContext.Events.PublicEvent>()
+            CreateMap<iRApi.Searches.OfficialSearchResultItem, DataContext.Events.OfficialEvent>()
                 .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Track.TrackId))
                 .ForMember(dest => dest.EventAverageLap, opt => opt.MapFrom(src => src.EventAverageLap != null ? src.EventAverageLap.Value.Ticks : 0))
                 .ForMember(dest => dest.EventBestLapTime, opt => opt.MapFrom(src => src.EventBestLapTime != null ? src.EventBestLapTime.Value.Ticks : 0));

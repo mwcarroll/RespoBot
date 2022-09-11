@@ -12,7 +12,7 @@ namespace RespoBot.Data.DbContexts
         IDapperRepository<DataContext.LicenseInfo> LicenseInfos { get; }
         IDapperRepository<DataContext.Member> Members { get; }
         IDapperRepository<DataContext.MemberInfo> MemberInfos { get; }
-        IDapperRepository<DataContext.Events.PublicEvent> PublicEvents { get; }
+        IDapperRepository<DataContext.Events.OfficialEvent> OfficialEvents { get; }
         IDapperRepository<DataContext.Track> Tracks { get; }
     }
 }

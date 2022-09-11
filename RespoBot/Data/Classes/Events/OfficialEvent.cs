@@ -7,8 +7,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RespoBot.Data.Classes.Events
 {
-    [Table("PublicEvents")]
-    public class PublicEvent : IEquatable<PublicEvent>
+    [Table("OfficialEvents")]
+    public class OfficialEvent : IEquatable<OfficialEvent>
     {
         [Key]
         [Identity]
@@ -48,12 +48,11 @@ namespace RespoBot.Data.Classes.Events
         public long EventAverageLap { get; set; }
         public long EventBestLapTime { get; set; }
 
-        public bool Equals(PublicEvent other)
+        public bool Equals(OfficialEvent other)
         {
             if (other == null) return false;
 
             return
-                Equals(Id, other.Id) &&
                 Equals(IRacingMemberId, other.IRacingMemberId) &&
                 Equals(SessionId, other.SessionId) &&
                 Equals(SubsessionId, other.SubsessionId) &&
@@ -86,15 +85,15 @@ namespace RespoBot.Data.Classes.Events
                 Equals(EventBestLapTime, other.EventBestLapTime);
         }
 
-        public override bool Equals(object obj) => Equals(obj as PublicEvent);
+        public override bool Equals(object obj) => Equals(obj as OfficialEvent);
 
-        public static bool operator ==(PublicEvent left, PublicEvent right)
+        public static bool operator ==(OfficialEvent left, OfficialEvent right)
         {
             if (left is null) return right is null;
             return left.Equals(right);
         }
 
-        public static bool operator !=(PublicEvent left, PublicEvent right)
+        public static bool operator !=(OfficialEvent left, OfficialEvent right)
         {
             return !(left == right);
         }
@@ -102,8 +101,7 @@ namespace RespoBot.Data.Classes.Events
         public override int GetHashCode()
         {
             return (
-                    Id,
-                    iRacingMemberId: IRacingMemberId,
+                    IRacingMemberId,
                     SessionId,
                     SubsessionId,
                     StartTime,

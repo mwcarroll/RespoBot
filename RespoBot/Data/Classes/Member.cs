@@ -20,7 +20,7 @@ namespace RespoBot.Data.Classes
         [Column("discordMemberId")]
         public long DiscordMemberId { get; set; }
         public DateTime? LastCheckedHosted { get; set; }
-        public DateTime? LastCheckedPublic { get; set; }
+        public DateTime? LastCheckedOfficial { get; set; }
 
         [InnerJoin(tableName: "memberInfos", key: "IRacingMemberId", externalKey: "IRacingMemberId")]
         public MemberInfo MemberInfo { get; set; }

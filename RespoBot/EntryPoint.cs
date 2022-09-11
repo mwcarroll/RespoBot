@@ -6,6 +6,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
+using RespoBot.Services.PeriodicDiscordServices;
 using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot
@@ -16,41 +17,40 @@ namespace RespoBot
         private readonly IConfiguration _configuration;
         private readonly ILogger<EntryPoint> _logger;
 
-        private readonly DiscordSocketClient _client;
+        private readonly DiscordSocketClient _discordClient;
         private readonly InteractionService _commands;
 
-        public EntryPoint(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient client, InteractionService commands)
+        public EntryPoint(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, InteractionService commands)
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;
             _logger = logger;
 
-            _client = client;
+            _discordClient = discordClient;
             _commands = commands;
         }
 
         public async Task Run(string[] args)
         {
             await _serviceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
-            _serviceProvider.GetRequiredService<DataHelperService>().Run();
+            // _serviceProvider.GetRequiredService<DataHelperService>().Run();
 
-            //Client.Ready += Client_Ready;
-            //Client.Log += Log;
-            //Commands.Log += Log;
+            //_discordClient.Ready += Client_Ready;
+            //_discordClient.Log += Log;
+            //_commands.Log += Log;
 
-            //await Client.LoginAsync(TokenType.Bot, Configuration["RespoBot:Token"]);
-            //await Client.StartAsync();
+            //await _discordClient.LoginAsync(TokenType.Bot, _configuration["RespoBot:Token"]);
+            //await _discordClient.StartAsync();
 
-            //await ServiceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
-            //ServiceProvider.GetRequiredService<StatsMassUpdaterService>().Initialize();
-            //ServiceProvider.GetRequiredService<PublicRacesService>().Initialize();
+            // await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
+            _serviceProvider.GetRequiredService<RaceService>().Run2();
 
             await Task.Delay(Timeout.Infinite);
         }
 
         private Task Client_Ready()
         {
-            _logger.LogInformation($"Connected as -> [{_client.CurrentUser}]");
+            _logger.LogInformation($"Connected as -> [{_discordClient.CurrentUser}]");
 
             return Task.CompletedTask;
         }

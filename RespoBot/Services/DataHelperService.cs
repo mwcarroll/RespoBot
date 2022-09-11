@@ -35,11 +35,11 @@ namespace RespoBot.Services
 
         public void Run()
         {
-            // UpdateEventTypes();
-            // UpdateTracks();
-            // UpdateCars();
-            RepopulatePublicRaces();
-            RepopulateHostedRaces();
+            //UpdateEventTypes();
+            //UpdateTracks();
+            //UpdateCars();
+            //RepopulatePublicRaces();
+            //RepopulateHostedRaces();
         }
 
         private async void RepopulateHostedRaces()
@@ -110,17 +110,12 @@ namespace RespoBot.Services
                                                                 opts.AfterMap((_, dest) =>
                                                                 {
                                                                     dest.PrivateSessionId = item.PrivateSessionId;
-
-                                                                    if (response.Result.Data.Header.Data.Params.ParticipantCustomerId != null)
-                                                                        dest.IRacingMemberId = (int)response.Result.Data.Header.Data.Params.ParticipantCustomerId;
-                                                                    else
-                                                                        throw new iRApi.Exceptions.iRacingDataClientException("Participant Customer Id null");
                                                                 });
                                                             }
                                                         ));
                                                 });
 
-                                        var mappedRace = _mapper.Map<DataContext.Events.HostedEvent>(
+                                        mappedRaces.Add(_mapper.Map<DataContext.Events.HostedEvent>(
                                                 item,
                                                 opts =>
                                                 {
@@ -132,9 +127,7 @@ namespace RespoBot.Services
                                                             throw new iRApi.Exceptions.iRacingDataClientException("Participant Customer Id null");
                                                     });
                                                 }
-                                            );
-
-                                        mappedRaces.Add(mappedRace);
+                                            ));
                                     }
                                 });
                     });
@@ -167,7 +160,7 @@ namespace RespoBot.Services
                 int expectedRequests = (int)members.Sum(member => Math.Ceiling((dateNow - member.MemberInfo.MemberSince).TotalDays / numberOfDaysToSearch));
 
                 Guid requestGroup = Guid.NewGuid();
-                ConcurrentBag<DataContext.Events.PublicEvent> mappedRaces = new();
+                ConcurrentBag<DataContext.Events.OfficialEvent> mappedRaces = new();
 
                 foreach (DataContext.Member member in members)
                 {
@@ -190,7 +183,7 @@ namespace RespoBot.Services
                         dateIterator = (dateIterator.AddDays(-numberOfDaysToSearch) < member.MemberInfo.MemberSince) ? member.MemberInfo.MemberSince : dateIterator.AddDays(-numberOfDaysToSearch);
                     }
 
-                    member.LastCheckedPublic = dateNow;
+                    member.LastCheckedOfficial = dateNow;
                 }
 
                 List<Task<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader Header, iRApi.Searches.OfficialSearchResultItem[] Items)>>> responses =
@@ -205,7 +198,7 @@ namespace RespoBot.Services
                                 response.Result.Data.Items,
                                 item => {
                                     mappedRaces.Add(
-                                        _mapper.Map<DataContext.Events.PublicEvent>(
+                                        _mapper.Map<DataContext.Events.OfficialEvent>(
                                             item,
                                             opts => {
                                                 opts.AfterMap((_, dest) =>
@@ -220,8 +213,8 @@ namespace RespoBot.Services
                                 });
                     });
 
-                await _db.PublicEvents.DeleteAsync(predicate: null).ConfigureAwait(false);
-                await _db.PublicEvents.BulkInsertAsync(mappedRaces.OrderBy(x => x.StartTime).ToList()).ConfigureAwait(false);
+                await _db.OfficialEvents.DeleteAsync(predicate: null).ConfigureAwait(false);
+                await _db.OfficialEvents.BulkInsertAsync(mappedRaces.OrderBy(x => x.StartTime).ToList()).ConfigureAwait(false);
 
                 await _db.Members.BulkUpdateAsync(members).ConfigureAwait(false);
             }

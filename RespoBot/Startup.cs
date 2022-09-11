@@ -10,6 +10,7 @@ using MicroOrm.Dapper.Repositories.Config;
 using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
+using RespoBot.Services.PeriodicDiscordServices;
 using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot
@@ -72,11 +73,8 @@ namespace RespoBot
             services.AddSingleton<RateLimitService>();
             services.AddSingleton<RequestHandlerService>();
 
-            //services.AddSingleton<StatsMassUpdaterService>();
-            //services.AddSingleton<PublicRacesService>();
-            //services.AddSingleton<HostedRacesService>();
-
-            services.AddSingleton<DataHelperService>();
+            services.AddSingleton<RaceService>();
+            //services.AddSingleton<DataHelperService>();
 
             services.AddSingleton<EntryPoint>();
 

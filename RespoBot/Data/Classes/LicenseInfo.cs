@@ -22,7 +22,7 @@ namespace RespoBot.Data.Classes
         public string GroupName { get; set; }
         public int GroupId { get; set; }
         public float CornersPerIncident { get; set; }
-        public int Rating { get; set; }
+        public int IRating { get; set; }
         public int TtRating { get; set; }
         public int MprNumberOfRaces { get; set; }
         public int MprNumberOfTimeTrials { get; set; }
@@ -32,7 +32,6 @@ namespace RespoBot.Data.Classes
             if (other == null) return false;
 
             return
-                Equals(Id, other.Id) &&
                 Equals(IRacingMemberId, other.IRacingMemberId) &&
                 Equals(CategoryId, other.CategoryId) &&
                 Equals(Category, other.Category) &&
@@ -42,7 +41,7 @@ namespace RespoBot.Data.Classes
                 Equals(GroupName, other.GroupName) &&
                 Equals(GroupId, other.GroupId) &&
                 Equals(CornersPerIncident, other.CornersPerIncident) &&
-                Equals(Rating, other.Rating) &&
+                Equals(IRating, other.IRating) &&
                 Equals(TtRating, other.TtRating) &&
                 Equals(MprNumberOfRaces, other.MprNumberOfRaces) &&
                 Equals(MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
@@ -64,8 +63,7 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    Id,
-                    iRacingMemberId: IRacingMemberId,
+                    IRacingMemberId,
                     CategoryId,
                     Category,
                     LicenseLevel,
@@ -74,7 +72,7 @@ namespace RespoBot.Data.Classes
                     GroupName,
                     GroupId,
                     CornersPerIncident,
-                    IRating: Rating,
+                    IRating: IRating,
                     TTRating: TtRating,
                     MprNumberOfRaces,
                     MprNumberOfTimeTrials

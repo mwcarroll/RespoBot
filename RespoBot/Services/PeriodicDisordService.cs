@@ -44,7 +44,7 @@ namespace RespoBot.Services
         {
             CancellationTokenSource tokenSource = new();
 
-            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:{_serviceName}Interval")), tokenSource.Token);
+            Task timerTask = RunPeriodically(Run, DateTime.UtcNow, TimeSpan.FromMinutes(_configuration.GetValue<int>($"RespoBot:ServiceIntervals:{_serviceName}", 1)), tokenSource.Token);
 
             return Task.CompletedTask;
         }
