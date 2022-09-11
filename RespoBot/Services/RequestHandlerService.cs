@@ -51,9 +51,9 @@ namespace RespoBot.Services
                     _expectedRequests += expectedRequests;
                     _taskGroupStartedAt.Add(requestGroup, DateTimeOffset.UtcNow);
                 }
-
-                _pendingRequests.Add(request, requestGroup);
             }
+
+            _pendingRequests.Add(request, requestGroup);
 
             await Task.Delay(GetPerRequestDelay(requestGroup));
         }
