@@ -39,7 +39,7 @@ namespace RespoBot.Services.PeriodicDiscordServices
             _requestHandlerService = requestHandlerService;
         }
 
-        public async void Run2()
+        protected override async void Run()
         {
             int[] eventIdsToSearch = { (await _db.EventTypes.FindAsync(x => x.Label == "Race").ConfigureAwait(false))!.Value };
 
@@ -100,7 +100,7 @@ namespace RespoBot.Services.PeriodicDiscordServices
             List<Task<iRApi.Common.DataResponse<iRApi.Member.DriverInfo[]>>> driverInfoResponses
                 = _requestHandlerService.GetResponses<iRApi.Common.DataResponse<iRApi.Member.DriverInfo[]>>(driverInfoRequestGroup);
 
-            ConcurrentBag <DataContext.Events.Hosted.CarInfo> mappedCars = new();
+            ConcurrentBag<DataContext.Events.Hosted.CarInfo> mappedCars = new();
             ConcurrentBag<DataContext.Events.HostedEvent> mappedHostedEvents = new();
             ConcurrentBag<DataContext.Events.OfficialEvent> mappedOfficialEvents = new();
             ConcurrentBag<DataContext.LicenseInfo> mappedLicenseInfos = new();
@@ -204,40 +204,24 @@ namespace RespoBot.Services.PeriodicDiscordServices
                 });
 
             List<DataContext.Events.Hosted.CarInfo> distinctMappedCarsList = mappedCars.DistinctBy(x => new { x.PrivateSessionId, x.CarId }).ToList();
-            List<int> distinctMappedCarInfoIdentifiers = distinctMappedCarsList.Select(x => x.PrivateSessionId).ToList();
-
-            IEnumerable<DataContext.Events.Hosted.CarInfo> carInfosInDb = await _db.HostedEventCarInfos.FindAllAsync(x => distinctMappedCarInfoIdentifiers.Contains(x.PrivateSessionId)).ConfigureAwait(false);
-
-            distinctMappedCarsList.RemoveAll(x => carInfosInDb.Contains(x));
-
-            if(distinctMappedCarsList.Any())
-                await _db.HostedEventCarInfos.BulkInsertAsync(distinctMappedCarsList.OrderBy(x => new { x.PrivateSessionId, x.CarId })).ConfigureAwait(false);
-
             List<DataContext.Events.HostedEvent> distinctMappedHostedEvents = mappedHostedEvents.DistinctBy(x => new { x.PrivateSessionId, x.IRacingMemberId }).ToList();
-            List<int> distinctMappedHostedEventIdentifiers = distinctMappedHostedEvents.Select(x => x.PrivateSessionId).ToList();
-
-            IEnumerable<DataContext.Events.HostedEvent> hostedEventsInDb = await _db.HostedEvents.FindAllAsync(x => distinctMappedHostedEventIdentifiers.Contains(x.PrivateSessionId)).ConfigureAwait(false);
-
-            distinctMappedHostedEvents.RemoveAll(x => hostedEventsInDb.Contains(x));
-
-            if (distinctMappedHostedEvents.Any())
-                await _db.HostedEvents.BulkInsertAsync(distinctMappedHostedEvents.OrderBy(x => x.StartTime)).ConfigureAwait(false);
-
             List<DataContext.Events.OfficialEvent> distinctMappedOfficialEvents = mappedOfficialEvents.DistinctBy(x => new { x.SessionId, x.SubsessionId, x.IRacingMemberId }).ToList();
-            List<int> distinctMappedOfficialEventIdentifiers = distinctMappedOfficialEvents.Select(x => x.SubsessionId).ToList();
-
-            IEnumerable<DataContext.Events.OfficialEvent> officialEventsInDb = await _db.OfficialEvents.FindAllAsync(x => distinctMappedOfficialEventIdentifiers.Contains(x.SubsessionId)).ConfigureAwait(false);
-
-            distinctMappedOfficialEvents.RemoveAll(x => officialEventsInDb.Contains(x));
-
-            if (distinctMappedHostedEvents.Any())
-                await _db.OfficialEvents.BulkInsertAsync(distinctMappedOfficialEvents.OrderBy(x => x.StartTime)).ConfigureAwait(false);
-
             List<DataContext.LicenseInfo> distinctMappedLicenseInfos = mappedLicenseInfos.DistinctBy(x => new { x.IRacingMemberId, x.CategoryId }).ToList();
+
+            List<int> distinctMappedCarInfoIdentifiers = distinctMappedCarsList.Select(x => x.PrivateSessionId).ToList();
+            List<int> distinctMappedHostedEventIdentifiers = distinctMappedHostedEvents.Select(x => x.PrivateSessionId).ToList();
+            List<int> distinctMappedOfficialEventIdentifiers = distinctMappedOfficialEvents.Select(x => x.SubsessionId).ToList();
             List<int> distinctMappedLicenseInfosIdentifiers = distinctMappedLicenseInfos.Select(x => x.IRacingMemberId).ToList();
 
+            IEnumerable<DataContext.Events.Hosted.CarInfo> carInfosInDb = await _db.HostedEventCarInfos.FindAllAsync(x => distinctMappedCarInfoIdentifiers.Contains(x.PrivateSessionId)).ConfigureAwait(false);
+            IEnumerable<DataContext.Events.HostedEvent> hostedEventsInDb = await _db.HostedEvents.FindAllAsync(x => distinctMappedHostedEventIdentifiers.Contains(x.PrivateSessionId)).ConfigureAwait(false);
+            IEnumerable<DataContext.Events.OfficialEvent> officialEventsInDb = await _db.OfficialEvents.FindAllAsync(x => distinctMappedOfficialEventIdentifiers.Contains(x.SubsessionId)).ConfigureAwait(false);
             IEnumerable<DataContext.LicenseInfo> licensesInfosInDb = await _db.LicenseInfos.FindAllAsync(x => distinctMappedLicenseInfosIdentifiers.Contains(x.IRacingMemberId)).ConfigureAwait(false);
 
+            distinctMappedCarsList.RemoveAll(x => carInfosInDb.Contains(x));
+            distinctMappedHostedEvents.RemoveAll(x => hostedEventsInDb.Contains(x));
+            distinctMappedOfficialEvents.RemoveAll(x => officialEventsInDb.Contains(x));
+            
             IEnumerable<DataContext.LicenseInfo> updatedLicenseInfos = licensesInfosInDb.Join(
                 distinctMappedLicenseInfos,
                 a => new { a.IRacingMemberId, a.CategoryId },
@@ -262,6 +246,15 @@ namespace RespoBot.Services.PeriodicDiscordServices
 
             IEnumerable<DataContext.LicenseInfo> missingLicenseInfos = distinctMappedLicenseInfos.Except(updatedLicenseInfos);
             updatedLicenseInfos = updatedLicenseInfos.Except(licensesInfosInDb);
+
+            if (distinctMappedCarsList.Any())
+                await _db.HostedEventCarInfos.BulkInsertAsync(distinctMappedCarsList.OrderBy(x => new { x.PrivateSessionId, x.CarId })).ConfigureAwait(false);
+
+            if (distinctMappedHostedEvents.Any())
+                await _db.HostedEvents.BulkInsertAsync(distinctMappedHostedEvents.OrderBy(x => x.StartTime)).ConfigureAwait(false);
+
+            if (distinctMappedOfficialEvents.Any())
+                await _db.OfficialEvents.BulkInsertAsync(distinctMappedOfficialEvents.OrderBy(x => x.StartTime)).ConfigureAwait(false);
 
             if (updatedLicenseInfos.Any())
                 await _db.LicenseInfos.BulkUpdateAsync(updatedLicenseInfos).ConfigureAwait(false);            

@@ -43,7 +43,7 @@ namespace RespoBot
             //await _discordClient.StartAsync();
 
             // await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
-            _serviceProvider.GetRequiredService<RaceService>().Run2();
+            _serviceProvider.GetRequiredService<RaceService>().Initialize();
 
             await Task.Delay(Timeout.Infinite);
         }
