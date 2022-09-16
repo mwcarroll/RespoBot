@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using MicroOrm.Dapper.Repositories.Attributes;
 
 namespace RespoBot.Data.Classes
 {
@@ -10,18 +9,17 @@ namespace RespoBot.Data.Classes
     public class LicenseInfo : IEquatable<LicenseInfo>
     {
         [Key]
-        [Identity]
-        public int Id { get; set; }
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public int IRacingMemberId { get; set; }
+        [Key]
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public int LicenseLevel { get; set; }
-        public float SafetyRating { get; set; }
+        public decimal SafetyRating { get; set; }
         public string Color { get; set; }
         public string GroupName { get; set; }
         public int GroupId { get; set; }
-        public float CornersPerIncident { get; set; }
+        public decimal CornersPerIncident { get; set; }
         public int IRating { get; set; }
         public int TtRating { get; set; }
         public int MprNumberOfRaces { get; set; }
@@ -72,7 +70,7 @@ namespace RespoBot.Data.Classes
                     GroupName,
                     GroupId,
                     CornersPerIncident,
-                    IRating: IRating,
+                    IRating,
                     TTRating: TtRating,
                     MprNumberOfRaces,
                     MprNumberOfTimeTrials

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
@@ -6,7 +8,6 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using RespoBot.Services;
-using RespoBot.Services.PeriodicDiscordServices;
 using RespoBot.Services.PeriodicServices;
 
 namespace RespoBot
@@ -20,7 +21,11 @@ namespace RespoBot
         private readonly DiscordSocketClient _discordClient;
         private readonly InteractionService _commands;
 
-        public EntryPoint(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, InteractionService commands)
+        private readonly iRApi.IDataClient _iRacingDataClient;
+
+        private readonly IDbContext _db;
+
+        public EntryPoint(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<EntryPoint> logger, DiscordSocketClient discordClient, InteractionService commands, iRApi.IDataClient iRacingDataClient, IDbContext db)
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;
@@ -28,13 +33,14 @@ namespace RespoBot
 
             _discordClient = discordClient;
             _commands = commands;
+
+            _iRacingDataClient = iRacingDataClient;
+
+            _db = db;
         }
 
         public async Task Run(string[] args)
         {
-            await _serviceProvider.GetRequiredService<RateLimitService>().InitializeAsync();
-            // _serviceProvider.GetRequiredService<DataHelperService>().Run();
-
             //_discordClient.Ready += Client_Ready;
             //_discordClient.Log += Log;
             //_commands.Log += Log;
@@ -43,7 +49,9 @@ namespace RespoBot
             //await _discordClient.StartAsync();
 
             // await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
-            _serviceProvider.GetRequiredService<RaceService>().Initialize();
+
+            _serviceProvider.GetRequiredService<TaskQueueService>().Run();
+            _serviceProvider.GetRequiredService<SubSessionIndexerService>().Run();
 
             await Task.Delay(Timeout.Infinite);
         }
