@@ -1,7 +1,5 @@
-﻿using RespoBot.Helpers;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System;
-using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,8 +53,6 @@ namespace RespoBot.Services.PeriodicServices
                     _taskQueueService.QueueRequest(
                             () =>
                             {
-                                _logger.LogDebug($"from {startRangeBegin.ToString("yyyy-MM-dd")} to {startRangeEnd.ToString("yyyy-MM-dd")}");
-
                                 return _iRacingDataClient.SearchHostedResultsAsync(new iRApi.Searches.HostedSearchParameters()
                                 {
                                     StartRangeBegin = startRangeBegin,

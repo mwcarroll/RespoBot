@@ -70,6 +70,7 @@ namespace RespoBot
             services.AddSingleton<CommandHandler>();
 
             services.AddSingleton<TaskQueueService>();
+            services.AddSingleton<SeriesIndexerService>();
             services.AddSingleton<SubSessionIndexerService>();
 
             services.AddSingleton<EntryPoint>();

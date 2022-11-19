@@ -51,7 +51,8 @@ namespace RespoBot
             // await _serviceProvider.GetRequiredService<CommandHandler>().InitializeAsync();
 
             _serviceProvider.GetRequiredService<TaskQueueService>().Run();
-            _serviceProvider.GetRequiredService<SubSessionIndexerService>().Run();
+            _serviceProvider.GetRequiredService<SeriesIndexerService>().Run();
+            //_serviceProvider.GetRequiredService<SubSessionIndexerService>().Run();
 
             await Task.Delay(Timeout.Infinite);
         }

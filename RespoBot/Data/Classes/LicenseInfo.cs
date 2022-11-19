@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace RespoBot.Data.Classes
 {
-    [Table("licenseInfos")]
+    [Table("LicenseInfos")]
     public class LicenseInfo : IEquatable<LicenseInfo>
     {
         [Key]

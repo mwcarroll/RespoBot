@@ -10,6 +10,9 @@ namespace RespoBot
             CreateMap<iRApi.Member.LicenseInfo, DataContext.LicenseInfo>()
                 .ForMember(dest => dest.CornersPerIncident, opt => opt.MapFrom(src => Math.Round(src.CornersPerIncident, 2)))
                 .ForMember(dest => dest.SafetyRating, opt => opt.MapFrom(src => Math.Round(src.SafetyRating, 2)));
+
+            CreateMap<iRApi.Series.Schedule, DataContext.Schedule>()
+                .ForMember(dest => dest.TrackId, opt => opt.MapFrom(src => src.Track.TrackId));
         }
     }
 }
