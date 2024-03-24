@@ -1,11 +1,9 @@
-﻿using Polly;
-using System;
-using System.Linq.Expressions;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Aydsko.iRacingData.Common;
+using Polly;
 
-namespace RespoBot.Services
+namespace RespoBot.Helpers
 {
     internal class RateLimitedIRacingApiClient
     {

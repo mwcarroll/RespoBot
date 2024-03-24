@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using LiveChartsCore.Drawing;
-using LiveChartsCore.Kernel.Drawing;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 
@@ -43,7 +39,7 @@ namespace RespoBot.Helpers
 
         public void SetValues(IEnumerable<TModel> values)
         {
-            this.Values = values;
+            Values = values;
         }
     }
 }

@@ -8,15 +8,15 @@ using LiveChartsCore.Defaults;
 using RespoBot.Helpers;
 using SkiaSharp;
 
-namespace RespoBot.Services.Periodic
+namespace RespoBot.Tasks.Periodic
 {
-    internal class MemberChartInfoPeriodicService
+    internal class MemberChartInfoPeriodicRespoBotTask : PeriodicRespoBotTask
     {
-        private readonly ILogger<MemberChartInfoPeriodicService> _logger;
+        private readonly ILogger<MemberChartInfoPeriodicRespoBotTask> _logger;
         private readonly IDbContext _db;
         private readonly RateLimitedIRacingApiClient _iRacing;
 
-        private readonly Services.EventHandlers.MemberInfoUpdatedEventHandlerService _memberInfoUpdated;
+        private readonly EventHandlers.MemberInfoUpdatedEventHandlerService _memberInfoUpdated;
 
         public event EventHandler<EventArgs.MemberInfoUpdatedEventArgs> MemberInfoUpdated;
         
@@ -34,7 +34,8 @@ namespace RespoBot.Services.Periodic
             { 714312, SKColor.Parse("#005c5c") }
         };
 
-        public MemberChartInfoPeriodicService(ILogger<MemberChartInfoPeriodicService> logger, IDbContext db, RateLimitedIRacingApiClient iRacing, Services.EventHandlers.MemberInfoUpdatedEventHandlerService memberInfoUpdated)
+        public MemberChartInfoPeriodicRespoBotTask(ILogger<MemberChartInfoPeriodicRespoBotTask> logger, IDbContext db, RateLimitedIRacingApiClient iRacing, EventHandlers.MemberInfoUpdatedEventHandlerService memberInfoUpdated)
+            : base(60000)
         {
             _logger = logger;
             _db = db;
@@ -43,7 +44,7 @@ namespace RespoBot.Services.Periodic
             _memberInfoUpdated = memberInfoUpdated;
         }
 
-        public void Run()
+        public override Task Run()
         {
             MemberInfoUpdated += (sender, e) =>
             {
@@ -51,10 +52,10 @@ namespace RespoBot.Services.Periodic
                 _memberInfoUpdated.Run(sender, e);
             };
 
-            Task.Run(RunMemberInfo);
+            return base.Run();
         }
 
-        private async void RunMemberInfo()
+        protected override async void Main()
         {
             List<DataContext.TrackedMember> members = (await _db.Members.FindAllAsync()).ToList();
 

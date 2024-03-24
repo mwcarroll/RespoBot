@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using LiveChartsCore;
-using LiveChartsCore.Defaults;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
@@ -11,7 +9,6 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using LiveChartsCore.SkiaSharpView.VisualElements;
-using Microsoft.VisualBasic;
 using SkiaSharp;
 
 namespace RespoBot.Helpers
@@ -103,19 +100,19 @@ namespace RespoBot.Helpers
             Series = Array.Empty<ISeries>();
         }
 
-        public void AddSeries(LiveChartsCore.ISeries series)
+        public void AddSeries(ISeries series)
         {
-            this.Series = this.Series.Append<LiveChartsCore.ISeries>(series).ToArray();
+            Series = Series.Append<ISeries>(series).ToArray();
         }
 
         public void SetTitleText(string titleText)
         {
-            ((LabelVisual)this.Title).Text = titleText;
+            ((LabelVisual)Title).Text = titleText;
         }
 
         public void SetXAxesCustomSeparators(IList<double> customSeparators)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.CustomSeparators = customSeparators;
             }
@@ -123,7 +120,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesCustomSeparators(IList<double> customSeparators)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.CustomSeparators = customSeparators;
             }
@@ -131,7 +128,7 @@ namespace RespoBot.Helpers
         
         public void SetXAxesLabeler(Func<double, string> func)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.Labeler = func;
             }
@@ -139,7 +136,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesLabeler(Func<double, string> func)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.Labeler = func;
             }
@@ -147,7 +144,7 @@ namespace RespoBot.Helpers
 
         public void SetXAxesUnitWidth(double unitWidth)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.UnitWidth = unitWidth;
             }
@@ -155,7 +152,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesUnitWidth(double unitWidth)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.UnitWidth = unitWidth;
             }
@@ -163,7 +160,7 @@ namespace RespoBot.Helpers
 
         public void SetXAxesMinStep(double minStep)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.MinStep = minStep;
             }
@@ -171,7 +168,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesMinStep(double minStep)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.MinStep = minStep;
             }
@@ -179,7 +176,7 @@ namespace RespoBot.Helpers
 
         public void SetXAxesMaxLimit(double maxLimit)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.MaxLimit = maxLimit;
             }
@@ -187,7 +184,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesMaxLimit(double maxLimit)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.MaxLimit = maxLimit;
             }
@@ -195,7 +192,7 @@ namespace RespoBot.Helpers
 
         public void SetXAxesMinLimit(double minLimit)
         {
-            foreach (ICartesianAxis axis in this.XAxes.ToList())
+            foreach (ICartesianAxis axis in XAxes.ToList())
             {
                 axis.MinLimit = minLimit;
             }
@@ -203,7 +200,7 @@ namespace RespoBot.Helpers
         
         public void SetYAxesMinLimit(double minLimit)
         {
-            foreach (ICartesianAxis axis in this.YAxes.ToList())
+            foreach (ICartesianAxis axis in YAxes.ToList())
             {
                 axis.MinLimit = minLimit;
             }

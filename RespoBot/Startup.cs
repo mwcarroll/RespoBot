@@ -6,7 +6,7 @@ using MicroOrm.Dapper.Repositories.Config;
 using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using RespoBot.Services;
+using RespoBot.Helpers;
 
 namespace RespoBot
 {
@@ -66,21 +66,26 @@ namespace RespoBot
 
             services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
             
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Services.EventHandlers.MemberInfoUpdatedEventHandlerService>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.EventHandlers.MemberInfoUpdatedEventHandlerService>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>>());
             
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Services.Periodic.MemberChartInfoPeriodicService>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Services.Periodic.MemberInfoPeriodicService>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Services.Periodic.SubSessionIndexerPeriodicService>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.MemberChartInfoPeriodicRespoBotTask>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.MemberInfoPeriodicRespoBotTask>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.SubSessionIndexerPeriodicRespoBotTask>>());
+
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Triggered.TrackInfoRespoBotTask>>());
+            
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.TestPeriodicRespoBotTask>>());
 
             services.AddSingleton<RateLimitedIRacingApiClient>();
 
-            services.AddSingleton<Services.EventHandlers.MemberInfoUpdatedEventHandlerService>();
-            services.AddSingleton<Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>();
+            // services.AddSingleton<Services.EventHandlers.MemberInfoUpdatedEventHandlerService>();
+            // services.AddSingleton<Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>();
+            //
+            // services.AddSingleton<Services.Periodic.MemberChartInfoPeriodicService>();
+            // services.AddTransient<Services.Periodic.MemberInfoPeriodicService>();
             
-            services.AddSingleton<Services.Periodic.MemberChartInfoPeriodicService>();
-            services.AddTransient<Services.Periodic.MemberInfoPeriodicService>();
-            services.AddTransient<Services.Periodic.SubSessionIndexerPeriodicService>();
+            services.AddTransient<Tasks.Periodic.TestPeriodicRespoBotTask>();
 
             return services;
         }

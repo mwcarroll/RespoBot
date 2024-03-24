@@ -1,4 +1,6 @@
-﻿namespace RespoBot.Services.EventHandlers
+﻿using RespoBot.Helpers;
+
+namespace RespoBot.Tasks.EventHandlers
 {
     internal class MemberInfoUpdatedEventHandlerService
     {

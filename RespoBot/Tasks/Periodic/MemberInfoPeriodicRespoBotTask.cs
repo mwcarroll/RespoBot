@@ -6,20 +6,22 @@ using Aydsko.iRacingData.Member;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.SKCharts;
+using RespoBot.Helpers;
 
-namespace RespoBot.Services.Periodic
+namespace RespoBot.Tasks.Periodic
 {
-    internal class MemberInfoPeriodicService
+    internal class MemberInfoPeriodicRespoBotTask : PeriodicRespoBotTask
     {
-        private readonly ILogger<MemberInfoPeriodicService> _logger;
+        private readonly ILogger<MemberInfoPeriodicRespoBotTask> _logger;
         private readonly IDbContext _db;
         private readonly RateLimitedIRacingApiClient _iRacing;
 
-        private readonly Services.EventHandlers.MemberInfoUpdatedEventHandlerService _memberInfoUpdated;
+        private readonly EventHandlers.MemberInfoUpdatedEventHandlerService _memberInfoUpdated;
 
         public event EventHandler<EventArgs.MemberInfoUpdatedEventArgs> MemberInfoUpdated;
 
-        public MemberInfoPeriodicService(ILogger<MemberInfoPeriodicService> logger, IDbContext db, RateLimitedIRacingApiClient iRacing, Services.EventHandlers.MemberInfoUpdatedEventHandlerService memberInfoUpdated)
+        public MemberInfoPeriodicRespoBotTask(ILogger<MemberInfoPeriodicRespoBotTask> logger, IDbContext db, RateLimitedIRacingApiClient iRacing, EventHandlers.MemberInfoUpdatedEventHandlerService memberInfoUpdated)
+            : base(60000)
         {
             _logger = logger;
             _db = db;
@@ -28,7 +30,7 @@ namespace RespoBot.Services.Periodic
             _memberInfoUpdated = memberInfoUpdated;
         }
 
-        public void Run()
+        public override Task Run()
         {
             MemberInfoUpdated += (sender, e) =>
             {
@@ -36,10 +38,10 @@ namespace RespoBot.Services.Periodic
                 _memberInfoUpdated.Run(sender, e);
             };
 
-            Task.Run(RunMemberInfo);
+            return base.Run();
         }
 
-        private async void RunMemberInfo()
+        protected override async void Main()
         {
             List<DataContext.TrackedMember> members = (await _db.Members.FindAllAsync()).ToList();
 
@@ -48,7 +50,7 @@ namespace RespoBot.Services.Periodic
                 await _iRacing.DataClient.LoginExternalAsync();
             }
 
-            iRApi.Member.DriverInfo[] driverInfos = (await _iRacing.ExecuteAsync(
+            DriverInfo[] driverInfos = (await _iRacing.ExecuteAsync(
                     () =>
                     {
                         return _iRacing.DataClient.GetDriverInfoAsync(members.Select(x => x.IRacingMemberId).ToArray(), true);

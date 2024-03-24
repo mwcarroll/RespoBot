@@ -1,25 +1,27 @@
-﻿using System.Threading.Tasks;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Aydsko.iRacingData.Searches;
+using RespoBot.Helpers;
 
-namespace RespoBot.Services.Periodic
+namespace RespoBot.Tasks.Periodic
 {
-    internal class SubSessionIndexerPeriodicService
+    internal class SubSessionIndexerPeriodicRespoBotTask : PeriodicRespoBotTask
     {
-        private readonly ILogger<SubSessionIndexerPeriodicService> _logger;
+        private readonly ILogger<SubSessionIndexerPeriodicRespoBotTask> _logger;
         private readonly IConfiguration _configuration;
         private readonly IDbContext _db;
         private readonly IMapper _mapper;
         private readonly RateLimitedIRacingApiClient _iRacing;
 
-        private readonly Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService _subSessionIdentifierIndexed;
+        private readonly EventHandlers.SubSessionIdentifierIndexedEventHandlerService _subSessionIdentifierIndexed;
 
         public event EventHandler<EventArgs.SubSessionIdentifierIndexedEventArgs> SubSessionsIndexedEvent;
 
-        public SubSessionIndexerPeriodicService(ILogger<SubSessionIndexerPeriodicService> logger, IConfiguration configuration, IDbContext db, IMapper mapper, RateLimitedIRacingApiClient iRacing, Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService subSessionIdentifierIndexed)
+        public SubSessionIndexerPeriodicRespoBotTask(ILogger<SubSessionIndexerPeriodicRespoBotTask> logger, IConfiguration configuration, IDbContext db, IMapper mapper, RateLimitedIRacingApiClient iRacing, EventHandlers.SubSessionIdentifierIndexedEventHandlerService subSessionIdentifierIndexed)
+            : base(60000)
         {
             _logger = logger;
             _configuration = configuration;
@@ -30,20 +32,20 @@ namespace RespoBot.Services.Periodic
             _subSessionIdentifierIndexed = subSessionIdentifierIndexed;
         }
 
-        public void Run()
+        public override Task Run()
         {
             SubSessionsIndexedEvent += (sender, e) =>
             {
                 _logger.LogDebug($"Event triggered.");
                 _ = _subSessionIdentifierIndexed.Run(sender, e);
             };
-
-            Task.Run(RunSubSessionIndexer);
+            
+            return base.Run();
         }
 
-        private async void RunSubSessionIndexer()
+        protected override async void Main()
         {
-            Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
+            Stopwatch timer = Stopwatch.StartNew();
             List<DataContext.TrackedMember> members = (await _db.Members.FindAllAsync()).ToList();
 
             int numberOfDaysToSearch = _configuration.GetValue<int>("RespoBot:Searches:NumberOfDaysToSearchPerRequest");
@@ -52,8 +54,8 @@ namespace RespoBot.Services.Periodic
             Dictionary<int, int[]> subSessionIdentifiersOfficial = new();
             Dictionary<int, int[]> subSessionIdentifiersHosted = new();
 
-            List<Task<iRApi.Common.DataResponse<(iRApi.Searches.HostedResultsHeader, iRApi.Searches.HostedResultItem[])>>> hostedResponseTasks = new();
-            List<Task<iRApi.Common.DataResponse<(iRApi.Searches.OfficialSearchResultHeader, iRApi.Searches.OfficialSearchResultItem[])>>> officialResponseTasks = new();
+            List<Task<iRApi.Common.DataResponse<(HostedResultsHeader, HostedResultItem[])>>> hostedResponseTasks = new();
+            List<Task<iRApi.Common.DataResponse<(OfficialSearchResultHeader, OfficialSearchResultItem[])>>> officialResponseTasks = new();
 
             if (!_iRacing.DataClient.IsLoggedIn)
             {
@@ -85,8 +87,8 @@ namespace RespoBot.Services.Periodic
                     // );
 
                     officialResponseTasks.Add(
-                    _iRacing.ExecuteAsync<(iRApi.Searches.OfficialSearchResultHeader, iRApi.Searches.OfficialSearchResultItem[])>(
-                            () => _iRacing.DataClient.SearchOfficialResultsAsync(new iRApi.Searches.OfficialSearchParameters
+                    _iRacing.ExecuteAsync<(OfficialSearchResultHeader, OfficialSearchResultItem[])>(
+                            () => _iRacing.DataClient.SearchOfficialResultsAsync(new OfficialSearchParameters
                             {
                                 StartRangeBegin = startRangeBegin,
                                 StartRangeEnd = startRangeEnd,
@@ -106,11 +108,11 @@ namespace RespoBot.Services.Periodic
             List<(HostedResultsHeader, HostedResultItem[])> hostedResponses = hostedResponseTasks.Select(x => x.Result.Data).ToList();
             List<(OfficialSearchResultHeader, OfficialSearchResultItem[])> officialResponses = officialResponseTasks.Select(x => x.Result.Data).ToList();
 
-            foreach ((iRApi.Searches.HostedResultsHeader header, iRApi.Searches.HostedResultItem[] items) in hostedResponses)
+            foreach ((HostedResultsHeader header, HostedResultItem[] items) in hostedResponses)
             {
                 if (!items.Any()) continue;
 
-                foreach (iRApi.Searches.HostedResultItem item in items)
+                foreach (HostedResultItem item in items)
                 {
                     if (header.Data.Params.ParticipantCustomerId == null) continue;
                     
@@ -126,18 +128,18 @@ namespace RespoBot.Services.Periodic
                 }
             }
             
-            List<iRApi.Searches.HostedResultItem> hostedSessions = hostedResponses
+            List<HostedResultItem> hostedSessions = hostedResponses
                 .SelectMany(x => x.Item2)
                 .DistinctBy(x => x.SubsessionId)
                 .ToList();
             
             _logger.LogDebug($"SubSessionIds: {subSessionIdentifiersHosted.Count}, OfficialSessions: {hostedSessions.Count}");
 
-            foreach ((iRApi.Searches.OfficialSearchResultHeader header, iRApi.Searches.OfficialSearchResultItem[] items) in officialResponses)
+            foreach ((OfficialSearchResultHeader header, OfficialSearchResultItem[] items) in officialResponses)
             {
                 if (!items.Any()) continue;
 
-                foreach (iRApi.Searches.OfficialSearchResultItem item in items)
+                foreach (OfficialSearchResultItem item in items)
                 {
                     if (header.Data.Params.ParticipantCustomerId == null) continue;
 
@@ -150,7 +152,7 @@ namespace RespoBot.Services.Periodic
                 }
             }
 
-            List<iRApi.Searches.OfficialSearchResultItem> officialSessions = officialResponses
+            List<OfficialSearchResultItem> officialSessions = officialResponses
                 .SelectMany(x => x.Item2)
                 .DistinctBy(x => x.SubsessionId)
                 .ToList();
@@ -160,7 +162,7 @@ namespace RespoBot.Services.Periodic
             timer.Stop();
             
             // await _db.SubSessionsHosted.BulkInsertAsync(_mapper.Map<List<iRApi.Searches.HostedResultItem>, List<DataContext.SubSessionsHosted>>(hostedSessions));
-            await _db.SubSessionsOfficial.BulkUpdateAsync(_mapper.Map<List<iRApi.Searches.OfficialSearchResultItem>, List<DataContext.SubSessionsOfficial>>(officialSessions));
+            await _db.SubSessionsOfficial.BulkUpdateAsync(_mapper.Map<List<OfficialSearchResultItem>, List<DataContext.SubSessionsOfficial>>(officialSessions));
 
             _logger.LogDebug($"Sub-sessions Identified: {subSessionIdentifiersOfficial.Count + subSessionIdentifiersHosted.Count} Elapsed: { timer.Elapsed } Requests: { hostedResponses.Count + officialResponses.Count }");
 

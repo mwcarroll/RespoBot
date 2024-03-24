@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Aydsko.iRacingData.Results;
+using RespoBot.Helpers;
 
-namespace RespoBot.Services.EventHandlers
+namespace RespoBot.Tasks.EventHandlers
 {
     internal class SubSessionIdentifierIndexedEventHandlerService
     {

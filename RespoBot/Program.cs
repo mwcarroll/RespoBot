@@ -3,9 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using Quartz.Impl;
 using Quartz.Logging;
-using RespoBot.Services.Periodic;
 
 namespace RespoBot
 {
@@ -18,7 +16,8 @@ namespace RespoBot
 
             // serviceProvider.GetRequiredService<Services.Periodic.MemberChartInfoPeriodicService>().Run();
             //serviceProvider.GetRequiredService<Services.Periodic.MemberInfoPeriodicService>().Run();
-            serviceProvider.GetRequiredService<Services.Periodic.SubSessionIndexerPeriodicService>().Run();
+            //serviceProvider.GetRequiredService<Services.Periodic.SubSessionIndexerPeriodicService>().Run();
+            serviceProvider.GetRequiredService<Tasks.Periodic.TestPeriodicRespoBotTask>().Run();
 
             //// Grab the Scheduler instance from the Factory
             //StdSchedulerFactory factory = new StdSchedulerFactory();
