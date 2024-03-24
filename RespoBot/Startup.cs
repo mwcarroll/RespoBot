@@ -16,7 +16,7 @@ namespace RespoBot
         {
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                .AddJsonFile("appSettings.json", optional: true, reloadOnChange: false)
                 .AddUserSecrets<Program>()
                 .AddEnvironmentVariables("RespoBot:")
                 .Build();
