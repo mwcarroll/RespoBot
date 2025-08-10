@@ -5,6 +5,7 @@ using Dapper.Extensions.Caching.Memory;
 using MicroOrm.Dapper.Repositories.Config;
 using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
 using RespoBot.Helpers;
 
@@ -50,9 +51,10 @@ namespace RespoBot
             services.AddSingleton(
                 new MapperConfiguration(
                     mc => {
-                        mc.AddProfile(new MappingProfile());
-                    }
-                )
+                            mc.AddProfile(new MappingProfile());
+                        },
+                        new NullLoggerFactory()
+                    )
                 .CreateMapper()
             );
 
