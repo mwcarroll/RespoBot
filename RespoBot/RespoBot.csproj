@@ -3,7 +3,7 @@
 	<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <UserSecretsId>d9000b57-9d62-47fc-85bb-014eccd85a31</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <LangVersion>latestmajor</LangVersion>
     <Nullable>enable</Nullable>
