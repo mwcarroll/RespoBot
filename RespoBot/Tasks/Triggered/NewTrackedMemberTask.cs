@@ -56,7 +56,7 @@ namespace RespoBot.Tasks.Triggered
                 if (driverInfo.Licenses == null) continue;
                 foreach (LicenseInfo licenseInfo in driverInfo.Licenses)
                 {
-                    _logger.Log(LogLevel.Debug, $"{driverInfo.CustomerId} - {licenseInfo.Category} - {licenseInfo.IRating}");
+                    _logger.Log(LogLevel.Debug, $"{driverInfo.CustomerId} - {licenseInfo.Category} - {licenseInfo.GroupName}{licenseInfo.SafetyRating} - {licenseInfo.IRating}");
                 }
             }
         }
