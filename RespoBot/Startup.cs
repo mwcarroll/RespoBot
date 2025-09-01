@@ -67,27 +67,11 @@ namespace RespoBot
             });
 
             services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
-            
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.EventHandlers.MemberInfoUpdatedEventHandlerService>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>>());
-            
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.MemberChartInfoPeriodicRespoBotTask>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.MemberInfoPeriodicRespoBotTask>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.SubSessionIndexerPeriodicRespoBotTask>>());
-
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Triggered.TrackInfoRespoBotTask>>());
-            
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Periodic.TestPeriodicRespoBotTask>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Triggered.NewTrackedMemberTask>>());
 
             services.AddSingleton<RateLimitedIRacingApiClient>();
 
-            // services.AddSingleton<Services.EventHandlers.MemberInfoUpdatedEventHandlerService>();
-            // services.AddSingleton<Services.EventHandlers.SubSessionIdentifierIndexedEventHandlerService>();
-            //
-            // services.AddSingleton<Services.Periodic.MemberChartInfoPeriodicService>();
-            // services.AddTransient<Services.Periodic.MemberInfoPeriodicService>();
-            
-            services.AddTransient<Tasks.Periodic.TestPeriodicRespoBotTask>();
+            services.AddTransient<Tasks.Triggered.NewTrackedMemberTask>();
 
             return services;
         }

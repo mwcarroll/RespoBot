@@ -27,7 +27,6 @@ namespace RespoBot
                     opt => opt.MapFrom(src => src.NewIRating - src.OldIRating))
                 .ForMember(dest => dest.SafetyRatingChange,
                     opt => opt.MapFrom(src => Math.Round(src.NewSafetyRating - src.OldSafetyRating, 2)));
-                ;
         }
     }
 }

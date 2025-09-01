@@ -7,13 +7,13 @@ using RespoBot.Helpers;
 
 namespace RespoBot.Tasks.Triggered
 {
-    internal class TrackInfoRespoBotTask
+    internal class TrackInfoTask
     {
-        private readonly ILogger<TrackInfoRespoBotTask> _logger;
+        private readonly ILogger<TrackInfoTask> _logger;
         private readonly IConfiguration _configuration;
         private readonly RateLimitedIRacingApiClient _iRacing;
 
-        public TrackInfoRespoBotTask(ILogger<TrackInfoRespoBotTask> logger, IConfiguration configuration, RateLimitedIRacingApiClient iRacing)
+        public TrackInfoTask(ILogger<TrackInfoTask> logger, IConfiguration configuration, RateLimitedIRacingApiClient iRacing)
         {
             _logger = logger;
             _configuration = configuration;
@@ -27,7 +27,7 @@ namespace RespoBot.Tasks.Triggered
 
         private async void TrackIndexer()
         {
-            List<Task<iRApi.Common.DataResponse<Track[]>>> trackListTasks = new();
+            List<Task<iRApi.Common.DataResponse<Track[]>>> trackListTasks = [];
             
             if (!_iRacing.DataClient.IsLoggedIn)
             {

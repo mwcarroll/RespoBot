@@ -17,7 +17,7 @@ namespace RespoBot
             // serviceProvider.GetRequiredService<Services.Periodic.MemberChartInfoPeriodicService>().Run();
             //serviceProvider.GetRequiredService<Services.Periodic.MemberInfoPeriodicService>().Run();
             //serviceProvider.GetRequiredService<Services.Periodic.SubSessionIndexerPeriodicService>().Run();
-            serviceProvider.GetRequiredService<Tasks.Periodic.TestPeriodicRespoBotTask>().Run();
+            serviceProvider.GetRequiredService<Tasks.Triggered.NewTrackedMemberTask>().Run(386110);
 
             //// Grab the Scheduler instance from the Factory
             //StdSchedulerFactory factory = new StdSchedulerFactory();

@@ -26,7 +26,7 @@ namespace RespoBot.Data.Classes
         public int MprNumberOfRaces { get; set; }
         public int MprNumberOfTimeTrials { get; set; }
 
-        public bool Equals(LicenseInfo other)
+        public bool Equals(LicenseInfo? other)
         {
             if (other == null) return false;
 
@@ -46,9 +46,9 @@ namespace RespoBot.Data.Classes
                 Equals(MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
         }
 
-        public override bool Equals(object obj) => Equals(obj as LicenseInfo);
+        public override bool Equals(object? obj) => Equals(obj as LicenseInfo);
 
-        public static bool operator ==(LicenseInfo left, LicenseInfo right)
+        public static bool operator ==(LicenseInfo? left, LicenseInfo? right)
         {
             if (left is null) return right is null;
             return left.Equals(right);
