@@ -2,13 +2,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RespoBot.Tasks;
+namespace RespoBot.Events;
 
-public class PeriodicRespoBotTask : RespoBotTask
+public class PeriodicEvent : BaseEvent
 {
     protected int Interval { get; private set; }
 
-    protected PeriodicRespoBotTask(int interval)
+    protected PeriodicEvent(int interval)
     {
         Interval = interval;
     }

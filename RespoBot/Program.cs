@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Logging;
+using RespoBot.Events.Args;
+using RespoBot.Events.Triggered;
 
 namespace RespoBot
 {
@@ -17,8 +19,13 @@ namespace RespoBot
             // serviceProvider.GetRequiredService<Services.Periodic.MemberChartInfoPeriodicService>().Run();
             //serviceProvider.GetRequiredService<Services.Periodic.MemberInfoPeriodicService>().Run();
             //serviceProvider.GetRequiredService<Services.Periodic.SubSessionIndexerPeriodicService>().Run();
-            serviceProvider.GetRequiredService<Tasks.Triggered.NewTrackedMemberTask>().Run(386110);
-
+            
+            
+            
+            NewTrackedMemberEvent newTrackedMemberEvent = serviceProvider.GetRequiredService<NewTrackedMemberEvent>();
+            
+            // newTrackedMemberEvent.OnNewTrackedMember(new NewTrackedMemberEventArgs(123456, 12345678901234567890));
+            
             //// Grab the Scheduler instance from the Factory
             //StdSchedulerFactory factory = new StdSchedulerFactory();
             //IScheduler scheduler = await factory.GetScheduler();

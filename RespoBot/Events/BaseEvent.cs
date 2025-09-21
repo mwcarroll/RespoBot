@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RespoBot.Tasks;
+namespace RespoBot.Events;
 
-public class RespoBotTask
+public class BaseEvent
 {
     public Task Run(CancellationToken cancellationToken)
     {

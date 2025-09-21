@@ -6,7 +6,7 @@
 // using Aydsko.iRacingData.Searches;
 // using RespoBot.Helpers;
 //
-// namespace RespoBot.Tasks.Periodic
+// namespace RespoBot.Events.Periodic
 // {
 //     internal class SubSessionIndexerPeriodicRespoBotTask : PeriodicRespoBotTask
 //     {

@@ -8,7 +8,7 @@
 // using RespoBot.Helpers;
 // using SkiaSharp;
 //
-// namespace RespoBot.Tasks.Periodic
+// namespace RespoBot.Events.Periodic
 // {
 //     internal class MemberChartInfoPeriodicRespoBotTask : PeriodicRespoBotTask
 //     {

@@ -54,4 +54,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\aydsko-iracingdata\src\Aydsko.iRacingData\Aydsko.iRacingData.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
+  </ItemGroup>
 </Project>

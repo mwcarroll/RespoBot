@@ -12,10 +12,11 @@ namespace RespoBot.Data.Classes
         public int IRacingMemberId { get; set; }
         [Key]
         public long DiscordMemberId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
+        public DateTime? MemberSince { get; set; }
         public DateTime? LastCheckedHosted { get; set; }
         public DateTime? LastCheckedOfficial { get; set; }
         public DateTime? LastCheckedLicense { get; set; }
-        public DateTime? MemberSince { get; set; }
+        
     }
 }

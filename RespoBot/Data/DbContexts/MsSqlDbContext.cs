@@ -12,7 +12,7 @@ namespace RespoBot.Data.DbContexts
         private IDapperRepository<DataContext.SubSessionResultsOfficial> _subSessionResultsOfficial;
 
         public IDapperRepository<DataContext.LicenseInfo> LicenseInfos => _licenseInfos ??= new DapperRepository<DataContext.LicenseInfo>(Connection);
-        public IDapperRepository<DataContext.TrackedMember> Members => _members ??= new DapperRepository<DataContext.TrackedMember>(Connection);
+        public IDapperRepository<DataContext.TrackedMember> TrackedMembers => _members ??= new DapperRepository<DataContext.TrackedMember>(Connection);
         public IDapperRepository<DataContext.SubSessionsOfficial> SubSessionsOfficial => _subSessionsOfficial ??= new DapperRepository<DataContext.SubSessionsOfficial>(Connection);
         public IDapperRepository<DataContext.SubSessionResultsOfficial> SubSessionResultsOfficial => _subSessionResultsOfficial ??= new DapperRepository<DataContext.SubSessionResultsOfficial>(Connection);
 

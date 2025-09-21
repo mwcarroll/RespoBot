@@ -41,7 +41,7 @@ namespace RespoBot
             MicroOrmConfig.UseQuotationMarks = true;
 
             services.AddSingleton(typeof(ISqlGenerator<>), typeof(SqlGenerator<>));
-            services.AddTransient<IDbContext>(_ => new MsSqlDbContext(configuration.GetConnectionString("Default")));
+            services.AddSingleton<IDbContext>(_ => new MsSqlDbContext(configuration.GetConnectionString("Default")!));
 
             services.AddDapperCachingInMemory(new MemoryConfiguration
             {
@@ -67,11 +67,11 @@ namespace RespoBot
             });
 
             services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
-            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Tasks.Triggered.NewTrackedMemberTask>>());
+            services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Events.Triggered.NewTrackedMemberEvent>>());
 
             services.AddSingleton<RateLimitedIRacingApiClient>();
 
-            services.AddTransient<Tasks.Triggered.NewTrackedMemberTask>();
+            services.AddTransient<Events.Triggered.NewTrackedMemberEvent>();
 
             return services;
         }

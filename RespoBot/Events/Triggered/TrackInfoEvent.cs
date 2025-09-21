@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Aydsko.iRacingData.Tracks;
 using RespoBot.Helpers;
 
-namespace RespoBot.Tasks.Triggered
+namespace RespoBot.Events.Triggered
 {
-    internal class TrackInfoTask
+    internal class TrackInfoEvent
     {
-        private readonly ILogger<TrackInfoTask> _logger;
+        private readonly ILogger<TrackInfoEvent> _logger;
         private readonly IConfiguration _configuration;
         private readonly RateLimitedIRacingApiClient _iRacing;
 
-        public TrackInfoTask(ILogger<TrackInfoTask> logger, IConfiguration configuration, RateLimitedIRacingApiClient iRacing)
+        public TrackInfoEvent(ILogger<TrackInfoEvent> logger, IConfiguration configuration, RateLimitedIRacingApiClient iRacing)
         {
             _logger = logger;
             _configuration = configuration;

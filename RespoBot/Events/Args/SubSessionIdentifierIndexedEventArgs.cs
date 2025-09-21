@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RespoBot.EventArgs
+namespace RespoBot.Events.Args
 {
     internal class SubSessionIdentifierIndexedEventArgs
     {

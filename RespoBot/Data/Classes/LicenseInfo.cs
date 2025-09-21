@@ -15,7 +15,7 @@ namespace RespoBot.Data.Classes
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public int LicenseLevel { get; set; }
-        public decimal SafetyRating { get; set; }
+        public float SafetyRating { get; set; }
         public string Color { get; set; }
         public string GroupName { get; set; }
         public int GroupId { get; set; }

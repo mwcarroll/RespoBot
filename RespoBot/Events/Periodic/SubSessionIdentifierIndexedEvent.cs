@@ -3,39 +3,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using RespoBot.Helpers;
 
-namespace RespoBot.Tasks.EventHandlers
+namespace RespoBot.Events.Periodic
 {
-    internal class SubSessionIdentifierIndexedEventHandlerService
+    internal class SubSessionIdentifierIndexedEvent(
+        ILogger<SubSessionIdentifierIndexedEvent> logger,
+        IDbContext db,
+        IMapper mapper,
+        RateLimitedIRacingApiClient iRacing)
     {
-        private readonly ILogger<SubSessionIdentifierIndexedEventHandlerService> _logger;
-        private readonly IDbContext _db;
-        private readonly IMapper _mapper;
-        private readonly RateLimitedIRacingApiClient _iRacing;
+        private readonly IMapper _mapper = mapper;
 
-        public SubSessionIdentifierIndexedEventHandlerService(ILogger<SubSessionIdentifierIndexedEventHandlerService> logger, IDbContext db, IMapper mapper, RateLimitedIRacingApiClient iRacing)
+        public async Task Run(object sender, Events.Args.SubSessionIdentifierIndexedEventArgs e)
         {
-            _logger = logger;
-            _db = db;
-            _iRacing = iRacing;
-            _mapper = mapper;
-        }
+            logger.LogDebug($"Event received.");
 
-        public async Task Run(object sender, EventArgs.SubSessionIdentifierIndexedEventArgs e)
-        {
-            _logger.LogDebug($"Event received.");
+            List<DataContext.SubSessionResultsOfficial> results = [];
 
-            List<DataContext.SubSessionResultsOfficial> results = new();
-
-            if (!_iRacing.DataClient.IsLoggedIn)
+            if (!iRacing.DataClient.IsLoggedIn)
             {
-                await _iRacing.DataClient.LoginExternalAsync();
+                await iRacing.DataClient.LoginExternalAsync();
             }
 
             List<Task<iRApi.Common.DataResponse<iRApi.Results.SubSessionResult>>> subSessionTasks =
                 e.SubSessionIdentifiers.Select(subSession =>
-                    _iRacing.ExecuteAsync<iRApi.Results.SubSessionResult>(
+                    iRacing.ExecuteAsync<iRApi.Results.SubSessionResult>(
                         () =>
-                            _iRacing.DataClient.GetSubSessionResultAsync(subSession.Key, true)
+                            iRacing.DataClient.GetSubSessionResultAsync(subSession.Key, true)
                         )
                     ).ToList();
 
@@ -49,11 +42,11 @@ namespace RespoBot.Tasks.EventHandlers
 
                 if (raceSessionResults == null)
                 {
-                    _logger.LogDebug($"Skipping subsession {subSessionResponse.SubSessionId}; no race results found.");
+                    logger.LogDebug($"Skipping subsession {subSessionResponse.SubSessionId}; no race results found.");
                     continue;
                 }
                 
-                _logger.LogDebug($"Adding subsession {subSessionResponse.SubSessionId}.");
+                logger.LogDebug($"Adding subsession {subSessionResponse.SubSessionId}.");
                 
                 // results.AddRange(
                 //     e.SubSessionIdentifiers[subSessionResponse.SubSessionId].Select(
@@ -100,10 +93,10 @@ namespace RespoBot.Tasks.EventHandlers
             }
             else
             {
-                upserted = await _db.SubSessionResultsOfficial.BulkInsertAsync(results).ConfigureAwait(false);
+                upserted = await db.SubSessionResultsOfficial.BulkInsertAsync(results).ConfigureAwait(false);
             }
             
-            _logger.LogDebug($"Event handled; {results.Count} {(e.AreSubSessionsHosted ? "hosted" : "official") } subsessions indexed.");
+            logger.LogDebug($"Event handled; {results.Count} {(e.AreSubSessionsHosted ? "hosted" : "official") } subsessions indexed.");
         }
     }
 }

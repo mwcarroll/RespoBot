@@ -8,7 +8,7 @@
 // using LiveChartsCore.SkiaSharpView.SKCharts;
 // using RespoBot.Helpers;
 //
-// namespace RespoBot.Tasks.Periodic
+// namespace RespoBot.Events.Periodic
 // {
 //     internal class MemberInfoPeriodicRespoBotTask : PeriodicRespoBotTask
 //     {
