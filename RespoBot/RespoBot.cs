@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
 using RespoBot.Helpers;
+using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace RespoBot
 {
@@ -102,6 +104,38 @@ namespace RespoBot
             try
             {
                 DiscordSocketClient discordClient = ServiceProvider.GetRequiredService<DiscordSocketClient>();
+
+                discordClient.Log += message =>
+                {
+                    ILogger<DiscordSocketClient> logger = ServiceProvider.GetRequiredService<ILogger<DiscordSocketClient>>();
+                    
+                    switch (message.Severity)
+                    {
+                        case LogSeverity.Critical:
+                            logger.Log(LogLevel.Critical, message.Exception, message.Message);
+                            break;
+                        case LogSeverity.Error:
+                            logger.Log(LogLevel.Error, message.Exception, message.Message);
+                            break;
+                        case LogSeverity.Warning:
+                            logger.Log(LogLevel.Warning, message.Exception, message.Message);
+                            break;
+                        case LogSeverity.Info:
+                            logger.Log(LogLevel.Information, message.Exception, message.Message);
+                            break;
+                        case LogSeverity.Verbose:
+                            logger.Log(LogLevel.Trace, message.Exception, message.Message);
+                            break;
+                        case LogSeverity.Debug:
+                            logger.Log(LogLevel.Debug, message.Exception, message.Message);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    return Task.CompletedTask;
+                };
+                
                 await discordClient.LoginAsync(TokenType.Bot, Configuration.GetValue<string>("Respobot:Discord:Token"), true);
                 await discordClient.StartAsync();
 
