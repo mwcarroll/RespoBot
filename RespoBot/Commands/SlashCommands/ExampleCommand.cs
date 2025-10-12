@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Interactions;
 
-namespace RespoBot.Commands
+namespace RespoBot.Commands.SlashCommands
 {
     public class ExampleCommand : InteractionModuleBase<SocketInteractionContext>
     {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Logging;
@@ -13,16 +15,11 @@ namespace RespoBot
     {
         public static async Task Main(string[] args)
         {
-            IServiceCollection services = Startup.ConfigureServices();
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-            // serviceProvider.GetRequiredService<Services.Periodic.MemberChartInfoPeriodicService>().Run();
-            //serviceProvider.GetRequiredService<Services.Periodic.MemberInfoPeriodicService>().Run();
-            //serviceProvider.GetRequiredService<Services.Periodic.SubSessionIndexerPeriodicService>().Run();
+            RespoBot respoBot = new  RespoBot();
             
+            DiscordSocketClient discordClient = RespoBot.ServiceProvider.GetRequiredService<DiscordSocketClient>();
             
-            
-            NewTrackedMemberEvent newTrackedMemberEvent = serviceProvider.GetRequiredService<NewTrackedMemberEvent>();
+            NewTrackedMemberEvent newTrackedMemberEvent = RespoBot.ServiceProvider.GetRequiredService<NewTrackedMemberEvent>();
             
             // newTrackedMemberEvent.OnNewTrackedMember(new NewTrackedMemberEventArgs(123456, 12345678901234567890));
             

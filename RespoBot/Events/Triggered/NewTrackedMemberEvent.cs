@@ -45,8 +45,6 @@ namespace RespoBot.Events.Triggered
 
         private async Task NewTrackedMemberBotTaskAsync()
         {
-            
-            
             List<Task<iRApi.Common.DataResponse<DriverInfo[]>>> driverInfoTasks = [];
             
             if (!_iRacing.DataClient.IsLoggedIn)
