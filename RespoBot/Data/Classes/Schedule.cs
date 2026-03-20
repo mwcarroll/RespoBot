@@ -11,7 +11,7 @@ namespace RespoBot.Data.Classes
         public int SeriesId { get; set; }
         public int TrackId { get; set; }
 
-        public bool Equals(Schedule other)
+        public bool Equals(Schedule? other)
         {
             if (other == null) return false;
 
@@ -22,9 +22,9 @@ namespace RespoBot.Data.Classes
                 Equals(TrackId, other.TrackId);
         }
 
-        public override bool Equals(object obj) => Equals(obj as Schedule);
+        public override bool Equals(object? obj) => Equals(obj as Schedule);
 
-        public static bool operator ==(Schedule left, Schedule right)
+        public static bool operator ==(Schedule? left, Schedule? right)
         {
             if (left is null) return right is null;
             return left.Equals(right);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Aydsko.iRacingData.Common;
 using Aydsko.iRacingData.Member;
@@ -23,7 +21,7 @@ public class AddTrackedUserCommand(
         {
             Task<DataResponse<DriverInfo[]>> driverInfoTask = iRacing.GetDriverInfoAsync([iRacingMemberId], true);
 
-            await Task.WhenAll(driverInfoTask);
+            await driverInfoTask;
 
             DriverInfo[] driverInfos = driverInfoTask.Result.Data;
 

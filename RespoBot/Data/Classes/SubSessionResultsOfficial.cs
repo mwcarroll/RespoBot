@@ -11,7 +11,7 @@ namespace RespoBot.Data.Classes
         [Key]
         // ReSharper disable once InconsistentNaming
         public int IRacingMemberId { get; set; }
-        public string ClassName { get; set; }
+        public string ClassName { get; set; } = null!;
         public int CarNumber { get; set; }
         public int QualifyPosition { get; set; }
         public int FinishPosition { get; set; }

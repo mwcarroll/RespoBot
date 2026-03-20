@@ -14,17 +14,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
 using RespoBot.Client;
-using RespoBot.Helpers;
-using Serilog;
+using RespoBot.Commands.SlashCommands;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace RespoBot
 {
     public class RespoBot
     {
-        private static IConfiguration Configuration { get; set; }
-        private static IServiceCollection Services { get; set; }
-        public static IServiceProvider ServiceProvider { get; private set; }
+        private static IConfiguration Configuration { get; set; } = null!;
+        private static IServiceCollection Services { get; set; } = null!;
+        private static IServiceProvider ServiceProvider { get; set; } = null!;
 
         public RespoBot()
         {
@@ -98,6 +97,8 @@ namespace RespoBot
                     inner,
                     sp.GetService<ILogger<RateLimitInterceptor>>()));
 
+            Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<RespoBot>>());
+            Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDbContext>>());
             Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<DiscordSocketClient>>());
             Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
 
@@ -162,7 +163,9 @@ namespace RespoBot
             }
             catch (Exception e)
             {
-                throw; // TODO handle exception
+                ILogger<DiscordSocketClient> logger = ServiceProvider.GetRequiredService<ILogger<DiscordSocketClient>>();
+                
+                logger.Log(LogLevel.Critical, e, "An error occurred while setting up the Discord service.");
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace RespoBot.Data.Classes
 {
@@ -13,11 +12,11 @@ namespace RespoBot.Data.Classes
         public int iRacingMemberId { get; set; }
         [Key]
         public int CategoryId { get; set; }
-        public string Category { get; set; }
+        public string Category { get; set; } = null!;
         public int LicenseLevel { get; set; }
         public decimal SafetyRating { get; set; }
-        public string Color { get; set; }
-        public string GroupName { get; set; }
+        public string Color { get; set; } = null!;
+        public string GroupName { get; set; } = null!;
         public int GroupId { get; set; }
         public decimal CornersPerIncident { get; set; }
         
@@ -63,7 +62,7 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    IRacingMemberId: iRacingMemberId,
+                    iRacingMemberId,
                     CategoryId,
                     Category,
                     LicenseLevel,

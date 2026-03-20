@@ -46,6 +46,13 @@ public sealed class RateLimitInterceptor : AsyncInterceptorBase, IRateLimitMonit
         IInvocationProceedInfo proceedInfo,
         Func<IInvocation, IInvocationProceedInfo, Task> proceed)
     {
+        if (invocation.Method.Name == "Dispose" && invocation.Method.ReturnType == typeof(void))
+        {
+            // Handle disposal logic if necessary, then simply return.
+            // Do NOT call invocation.Proceed() here.
+            return;
+        }
+        
         await EnqueueAsync(async ct =>
         {
             ct.ThrowIfCancellationRequested();

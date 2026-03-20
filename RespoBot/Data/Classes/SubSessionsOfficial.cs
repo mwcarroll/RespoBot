@@ -8,8 +8,9 @@ namespace RespoBot.Data.Classes
 	{
 		[Key]
 		public int SubSessionId { get; set; }
-		public string SeriesName { get; set; }
-		public string TrackName { get; set; }
+
+		public string SeriesName { get; set; } = null!;
+		public string TrackName { get; set; } = null!;
 		public int NumberOfDrivers { get; set; }
 		public int StrengthOfField { get; set; }
 	}

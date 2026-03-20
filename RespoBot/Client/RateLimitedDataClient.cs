@@ -28,7 +28,7 @@ public static class RateLimitedDataClient
 
         return (iRApi.IDataClient)_generator.CreateInterfaceProxyWithTarget(
             interfaceToProxy: typeof(iRApi.IDataClient),
-            additionalInterfacesToProxy: [typeof(IRateLimitMonitor), typeof(IAsyncDisposable)],
+            additionalInterfacesToProxy: [typeof(IRateLimitMonitor), typeof(IAsyncDisposable), typeof(IDisposable)],
             target: inner,
             interceptors: interceptor);
     }
