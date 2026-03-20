@@ -13,9 +13,9 @@ using SkiaSharp;
 
 namespace RespoBot.Helpers
 {
-    internal class RespoBotSKCartesianChart : SKCartesianChart
+    internal class RespoBotSkCartesianChart : SKCartesianChart
     {
-        public RespoBotSKCartesianChart()
+        public RespoBotSkCartesianChart()
         {
             Title = new LabelVisual
             {

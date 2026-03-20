@@ -13,6 +13,7 @@ using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Quartz;
+using RespoBot.Client;
 using RespoBot.Helpers;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -82,19 +83,23 @@ namespace RespoBot
 
             Services.AddIRacingDataApi(options =>
             {
-                options.Username = Configuration.GetValue<string>("Aydsko.iRacing:User:Username");
-                options.Password = Configuration.GetValue<string>("Aydsko.iRacing:User:Password");
-                options.UserAgentProductName = "RespoBot";
-                options.UserAgentProductVersion = new Version(1, 0);
+                options.UseProductUserAgent("RespoBot", new Version(1, 0));
+                
+                options.UsePasswordLimitedOAuth(
+                    Configuration.GetValue<string>("Aydsko.iRacing:User:Username") ?? string.Empty,
+                    Configuration.GetValue<string>("Aydsko.iRacing:User:Password") ?? string.Empty,
+                    Configuration.GetValue<string>("Aydsko.iRacing:Client:ID") ?? string.Empty,
+                    Configuration.GetValue<string>("Aydsko.iRacing:Client:Secret") ?? string.Empty
+                );
             });
+            
+            Services.Decorate<IDataClient>((inner, sp) =>
+                RateLimitedDataClient.Create(
+                    inner,
+                    sp.GetService<ILogger<RateLimitInterceptor>>()));
 
             Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<DiscordSocketClient>>());
             Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<IDataClient>>());
-            Services.AddSingleton<ILogger>(svc => svc.GetRequiredService<ILogger<Events.Triggered.NewTrackedMemberEvent>>());
-
-            Services.AddSingleton<RateLimitedIRacingApiClient>();
-
-            Services.AddTransient<Events.Triggered.NewTrackedMemberEvent>();
 
             return Services;
         }

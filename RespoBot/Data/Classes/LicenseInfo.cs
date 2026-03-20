@@ -9,29 +9,30 @@ namespace RespoBot.Data.Classes
     public class LicenseInfo : IEquatable<LicenseInfo>
     {
         [Key]
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        public int IRacingMemberId { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public int iRacingMemberId { get; set; }
         [Key]
         public int CategoryId { get; set; }
         public string Category { get; set; }
         public int LicenseLevel { get; set; }
-        public float SafetyRating { get; set; }
+        public decimal SafetyRating { get; set; }
         public string Color { get; set; }
         public string GroupName { get; set; }
         public int GroupId { get; set; }
         public decimal CornersPerIncident { get; set; }
+        
         // ReSharper disable once InconsistentNaming
-        public int IRating { get; set; }
-        public int TtRating { get; set; }
-        public int MprNumberOfRaces { get; set; }
-        public int MprNumberOfTimeTrials { get; set; }
+        public int? iRating { get; set; }
+        public int? TimeTrialRating { get; set; }
+        public int MinimumParticipationRequirementNumberOfRaces { get; set; }
+        public int MinimumParticipationRequirementNumberOfTimeTrials { get; set; }
 
         public bool Equals(LicenseInfo? other)
         {
             if (other == null) return false;
 
             return
-                Equals(IRacingMemberId, other.IRacingMemberId) &&
+                Equals(iRacingMemberId, other.iRacingMemberId) &&
                 Equals(CategoryId, other.CategoryId) &&
                 Equals(Category, other.Category) &&
                 Equals(LicenseLevel, other.LicenseLevel) &&
@@ -40,10 +41,10 @@ namespace RespoBot.Data.Classes
                 Equals(GroupName, other.GroupName) &&
                 Equals(GroupId, other.GroupId) &&
                 Equals(CornersPerIncident, other.CornersPerIncident) &&
-                Equals(IRating, other.IRating) &&
-                Equals(TtRating, other.TtRating) &&
-                Equals(MprNumberOfRaces, other.MprNumberOfRaces) &&
-                Equals(MprNumberOfTimeTrials, other.MprNumberOfTimeTrials);
+                Equals(iRating, other.iRating) &&
+                Equals(TimeTrialRating, other.TimeTrialRating) &&
+                Equals(MinimumParticipationRequirementNumberOfRaces, other.MinimumParticipationRequirementNumberOfRaces) &&
+                Equals(MinimumParticipationRequirementNumberOfTimeTrials, other.MinimumParticipationRequirementNumberOfTimeTrials);
         }
 
         public override bool Equals(object? obj) => Equals(obj as LicenseInfo);
@@ -62,7 +63,7 @@ namespace RespoBot.Data.Classes
         public override int GetHashCode()
         {
             return (
-                    IRacingMemberId,
+                    IRacingMemberId: iRacingMemberId,
                     CategoryId,
                     Category,
                     LicenseLevel,
@@ -71,10 +72,10 @@ namespace RespoBot.Data.Classes
                     GroupName,
                     GroupId,
                     CornersPerIncident,
-                    IRating,
-                    TTRating: TtRating,
-                    MprNumberOfRaces,
-                    MprNumberOfTimeTrials
+                    iRating,
+                    TimeTrialRating,
+                    MinimumParticipationRequirementNumberOfRaces,
+                    MinimumParticipationRequirementNumberOfTimeTrials
                 ).GetHashCode();
         }
     }
